@@ -179,6 +179,12 @@ main.hub-main > .panel { padding:0; }
 .action-owner { background:var(--uq-purple); color:#fff; padding:0.05rem 0.45rem; border-radius:3px; font-size:0.74rem; font-weight:600; white-space:nowrap; flex-shrink:0; }
 .action-text { flex:1; color:var(--text); }
 .action-status { font-size:0.7rem; color:var(--accent-grant); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; }
+.followup-block { margin-top:0.7rem; padding-top:0.6rem; border-top:1px dashed var(--border); }
+.followup-head { font-size:0.78rem; font-weight:700; color:var(--accent-grant); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.4rem; }
+.followup-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.3rem; }
+.followup-item { display:flex; gap:0.6rem; align-items:flex-start; font-size:0.85rem; line-height:1.4; padding:0.35rem 0.55rem; background:#F0F4ED; border-radius:5px; border-left:3px solid var(--accent-grant); }
+.followup-date { font-size:0.72rem; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; padding-top:0.1rem; flex-shrink:0; min-width:65px; }
+.followup-text { flex:1; color:var(--text); }
 
 /* Activities cards */
 .activity-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1rem; }
@@ -658,13 +664,18 @@ var journalMeta = {
 // MEETINGS: date format YYYY-MM-DD. 'minutes' is an optional link (relative path or URL).
 var allMeetings = [
   {date:"2026-04-28", title:"Hub Leadership Meeting (Inaugural)", attendees:"John C., Natalie Peng, Katie Meissner, Zan Ye, Saphira Rekker, Shahrzad Roohy Gohar, Kath Herbohn", notes:"Internal/external engagement updates, HDR & ECA workshop ideas (publishing in sustainability vs. traditional journals, dealing with reviewer rejections, ECA paper-leadership development), governance group to meet monthly, inaugural hub meeting in Sem 1, exploring short courses, industry symposium with BCSDA.", minutes:"Meeting Minutes/SBR Hub Meeting Notes 28042026.docx", actions:[
-    {owner:"Natalie Peng", text:"Coordinate with Saphira re: extending the member survey to HDR students.", status:"open"},
-    {owner:"Shahrzad Roohy Gohar", text:"Coordinate with Saphira re: setting up the blog/repository for member skills, focus, achievements and event participation.", status:"open"},
     {owner:"Katie Meissner", text:"Coordinate with Saphira re: extending the member survey to HDR students.", status:"open"},
+    {owner:"Natalie Peng", text:"Coordinate with Saphira on external engagement plans \u2014 webinars for students and other partner events over the coming weeks.", status:"open"},
+    {owner:"Shahrzad Roohy Gohar", text:"Coordinate with Saphira re: setting up the blog/repository for member skills, focus, achievements and event participation.", status:"open"},
     {owner:"Kath Herbohn", text:"Ask Marta for suggestions on the workshop \u201Cpublishing in sustainability journals vs. more traditional (often higher-ranked) journals\u201D \u2014 internal speakers DN, BW + a tourism colleague.", status:"open"},
-    {owner:"Kath Herbohn", text:"Organise a Doodle poll for monthly governance group meetings.", status:"open"},
-    {owner:"Kath Herbohn", text:"Organise a Doodle poll for the inaugural hub meeting (semester 1) to introduce the governance team and share plans.", status:"open"},
+    {owner:"Kath Herbohn", text:"Organise a Doodle poll for monthly governance group meetings.", status:"completed"},
+    {owner:"Kath Herbohn", text:"Organise a Doodle poll for the inaugural hub meeting (semester 1) to introduce the governance team and share plans.", status:"completed"},
     {owner:"Kath Herbohn", text:"Raise the possibility of the hub teaching short courses with Marta at next week\u2019s hub meeting.", status:"open"}
+  ], followup:[
+    {date:"2026-04-29", text:"Hub directory site went live at saphirarekker.github.io/SBR-hub/ \u2014 researcher entries grouped by 5-theme topic taxonomy (Climate Change, Sustainability Disclosure & ESG, Sustainable Finance, Sustainable Tourism, Responsible Business & Governance), with discipline view as alternate."},
+    {date:"2026-04-29", text:"Achievements timeline populated from public sources (44 entries since 2023) \u2014 publications with Q-rank/IF/ABDC badges, grants (incl. Saphira\u2019s ARC DECRA & Herbohn-Wade-Rekker-Turner AASB project), reports (Aurecon 2023), leadership roles (Carbon Budget Tracker, Net Zero Observatory, CAR editorship), and external engagement (ISO Net Zero, SBTi, ASFI). Filter by member, year, month, or type."},
+    {date:"2026-04-29", text:"Action items tracking added to the Meeting Minutes section (Hub-member view only). Kath\u2019s two Doodle polls now marked completed."},
+    {date:"2026-04-29", text:"Member survey draft v3 prepared with Kath\u2019s feedback incorporated (15 questions). Shared with Katie Meissner and Zan Ye for input before broader rollout. Members will verify their directory entry, self-tag topics, and optionally upload CV/publications list."}
   ]}
 ];
 
@@ -1006,6 +1017,19 @@ function renderMeetings() {
         h += '<span class="action-owner">' + escapeHtml(a.owner) + '</span>';
         h += '<span class="action-text">' + escapeHtml(a.text) + '</span>';
         if (st !== 'open') h += '<span class="action-status">' + escapeHtml(st) + '</span>';
+        h += '</li>';
+      }
+      h += '</ul></div>';
+    }
+    if (m.followup && m.followup.length) {
+      h += '<div class="followup-block">';
+      h += '<div class="followup-head">Since the meeting</div>';
+      h += '<ul class="followup-list">';
+      for (var k = 0; k < m.followup.length; k++) {
+        var f = m.followup[k];
+        h += '<li class="followup-item">';
+        if (f.date) h += '<span class="followup-date">' + escapeHtml(fmtDate(f.date)) + '</span>';
+        h += '<span class="followup-text">' + escapeHtml(f.text) + '</span>';
         h += '</li>';
       }
       h += '</ul></div>';
