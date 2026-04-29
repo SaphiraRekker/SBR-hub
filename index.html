@@ -170,7 +170,10 @@ main.hub-main > .panel { padding:0; }
 .meeting-row .m-actions a { font-size:0.78rem; color:var(--uq-purple); text-decoration:none; padding:0.25rem 0.7rem; border:1px solid var(--uq-purple); border-radius:4px; transition:all 0.2s; }
 .meeting-row .m-actions a:hover { background:var(--uq-purple); color:#fff; }
 .action-block { margin-top:0.7rem; padding-top:0.6rem; border-top:1px dashed var(--border); }
-.action-head { font-size:0.78rem; font-weight:700; color:var(--uq-purple); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.5rem; }
+.action-head { list-style:none; cursor:pointer; user-select:none; font-size:0.78rem; font-weight:700; color:var(--uq-purple); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.5rem; }
+.action-head::-webkit-details-marker { display:none; }
+.action-head::before { content:'\u25B6'; font-size:0.6rem; color:var(--uq-gold); transition:transform 0.15s; display:inline-block; }
+.action-block[open] > .action-head::before { transform:rotate(90deg); }
 .action-count { background:var(--accent-bis); color:#fff; padding:0.05rem 0.5rem; border-radius:10px; font-size:0.7rem; font-weight:600; letter-spacing:0; text-transform:none; }
 .action-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.35rem; }
 .action-item { display:flex; gap:0.5rem; align-items:flex-start; font-size:0.85rem; line-height:1.4; padding:0.35rem 0.55rem; background:#FAF8F5; border-radius:5px; border-left:3px solid var(--accent-meeting); }
@@ -180,7 +183,11 @@ main.hub-main > .panel { padding:0; }
 .action-text { flex:1; color:var(--text); }
 .action-status { font-size:0.7rem; color:var(--accent-grant); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; }
 .followup-block { margin-top:0.7rem; padding-top:0.6rem; border-top:1px dashed var(--border); }
-.followup-head { font-size:0.78rem; font-weight:700; color:var(--accent-grant); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.4rem; }
+.followup-head { list-style:none; cursor:pointer; user-select:none; font-size:0.78rem; font-weight:700; color:var(--accent-grant); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.5rem; }
+.followup-head::-webkit-details-marker { display:none; }
+.followup-head::before { content:'\u25B6'; font-size:0.6rem; color:var(--accent-grant); transition:transform 0.15s; display:inline-block; }
+.followup-block[open] > .followup-head::before { transform:rotate(90deg); }
+.followup-count { background:var(--accent-grant); color:#fff; padding:0.05rem 0.5rem; border-radius:10px; font-size:0.7rem; font-weight:600; letter-spacing:0; text-transform:none; }
 .followup-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.3rem; }
 .followup-item { display:flex; gap:0.6rem; align-items:flex-start; font-size:0.85rem; line-height:1.4; padding:0.35rem 0.55rem; background:#F0F4ED; border-radius:5px; border-left:3px solid var(--accent-grant); }
 .followup-date { font-size:0.72rem; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; padding-top:0.1rem; flex-shrink:0; min-width:65px; }
@@ -1007,8 +1014,8 @@ function renderMeetings() {
     if (m.actions && m.actions.length) {
       var openCount = 0;
       for (var k = 0; k < m.actions.length; k++) if ((m.actions[k].status||'open') === 'open') openCount++;
-      h += '<div class="action-block">';
-      h += '<div class="action-head">Action items <span class="action-count">' + openCount + ' open</span></div>';
+      h += '<details class="action-block" open>';
+      h += '<summary class="action-head">Action items <span class="action-count">' + openCount + ' open</span></summary>';
       h += '<ul class="action-list">';
       for (var k = 0; k < m.actions.length; k++) {
         var a = m.actions[k];
@@ -1019,11 +1026,11 @@ function renderMeetings() {
         if (st !== 'open') h += '<span class="action-status">' + escapeHtml(st) + '</span>';
         h += '</li>';
       }
-      h += '</ul></div>';
+      h += '</ul></details>';
     }
     if (m.followup && m.followup.length) {
-      h += '<div class="followup-block">';
-      h += '<div class="followup-head">Since the meeting</div>';
+      h += '<details class="followup-block">';
+      h += '<summary class="followup-head">Since the meeting <span class="followup-count">' + m.followup.length + ' updates</span></summary>';
       h += '<ul class="followup-list">';
       for (var k = 0; k < m.followup.length; k++) {
         var f = m.followup[k];
@@ -1032,7 +1039,7 @@ function renderMeetings() {
         h += '<span class="followup-text">' + escapeHtml(f.text) + '</span>';
         h += '</li>';
       }
-      h += '</ul></div>';
+      h += '</ul></details>';
     }
     h += '</div>';
     h += '<div class="m-actions">';
