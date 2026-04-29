@@ -20,11 +20,20 @@
   --accent-tourism: #3B8C6E;
   --accent-bis: #C73E1D;
   --accent-se: #6B4E71;
+  --accent-pub: #2E86AB;
+  --accent-report: #5A8FB8;
+  --accent-book: #8B5A8C;
+  --accent-grant: #3B8C6E;
+  --accent-leadership: #BB9D65;
+  --accent-engagement: #2C7873;
+  --accent-media: #C73E1D;
+  --accent-meeting: #6B4E71;
+  --accent-activity: #F18F01;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height:1.6; }
 
-header { background: linear-gradient(135deg, var(--uq-purple) 0%, var(--uq-purple-light) 100%); color:#fff; padding:2.5rem 2rem 1.5rem; }
+header { background: linear-gradient(135deg, var(--uq-purple) 0%, var(--uq-purple-light) 100%); color:#fff; padding:2.5rem 2rem 1.5rem; position:relative; }
 header h1 { font-size:1.8rem; font-weight:700; margin-bottom:0.3rem; }
 header p { font-size:0.95rem; opacity:0.9; max-width:700px; }
 
@@ -38,8 +47,15 @@ header p { font-size:0.95rem; opacity:0.9; max-width:700px; }
 .tab-sep { width:1px; background:rgba(255,255,255,0.15); margin:0.4rem 0.3rem; align-self:stretch; }
 
 /* Panels */
-.panel { display:none; padding:1.5rem 2rem 3rem; }
+.panel { display:none; }
 .panel.active { display:block; }
+
+/* View toggle (Discipline | Topic) */
+.view-toggle { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.8rem; }
+.vt-label { font-size:0.78rem; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; margin-right:0.3rem; }
+.vt-btn { padding:0.35rem 0.9rem; background:#fff; border:1px solid var(--border); border-radius:6px; font-size:0.83rem; color:var(--text-light); cursor:pointer; transition:all 0.15s; font-family:inherit; }
+.vt-btn:hover { color:var(--uq-purple); border-color:var(--uq-purple); }
+.vt-btn.active { background:var(--uq-purple); color:#fff; border-color:var(--uq-purple); font-weight:600; }
 
 /* Search */
 .search-wrap { margin-bottom:1rem; }
@@ -76,6 +92,7 @@ header p { font-size:0.95rem; opacity:0.9; max-width:700px; }
 .disc-tag.tourism { background: var(--accent-tourism); }
 .disc-tag.bis { background: var(--accent-bis); }
 .disc-tag.se { background: var(--accent-se); }
+.topic-tag { display:inline-block; font-size:0.78rem; padding:0.15rem 0.6rem; border-radius:4px; color:#fff; font-weight:500; background: var(--uq-purple); }
 
 /* Section heads */
 .sec-head { font-size:0.95rem; font-weight:600; color: var(--uq-purple); margin:1.2rem 0 0.7rem; padding-bottom:0.3rem; border-bottom:2px solid var(--uq-gold); }
@@ -103,6 +120,152 @@ header p { font-size:0.95rem; opacity:0.9; max-width:700px; }
 .no-results { text-align:center; padding:2rem; color:var(--text-light); }
 .is-hidden { display:none; }
 
+/* Main content area */
+main.hub-main { padding:1.5rem 2rem 3rem; max-width:1400px; margin:0 auto; }
+main.hub-main > .panel { padding:0; }
+
+/* Top-level accordion sections */
+.acc { background:var(--card-bg); border:1px solid var(--border); border-radius:10px; margin-bottom:1rem; overflow:hidden; }
+.acc > summary { list-style:none; cursor:pointer; padding:1rem 1.3rem; font-size:1.05rem; font-weight:600; color:var(--uq-purple); display:flex; align-items:center; gap:0.7rem; user-select:none; transition:background 0.15s; }
+.acc > summary::-webkit-details-marker { display:none; }
+.acc > summary:hover { background:#FAF8F5; }
+.acc > summary::before { content:'▶'; font-size:0.7rem; color:var(--uq-gold); transition:transform 0.2s; display:inline-block; }
+.acc[open] > summary::before { transform:rotate(90deg); }
+.acc > summary .count { font-size:0.78rem; font-weight:500; color:var(--text-light); margin-left:auto; }
+.acc > .acc-body { padding:0.5rem 1.3rem 1.3rem; border-top:1px solid var(--border); }
+
+/* Nested accordion (disciplines, hub activity sub-sections) */
+.acc-sub { margin:0.5rem 0; border:1px solid var(--border); border-radius:8px; background:#FCFBF9; overflow:hidden; }
+.acc-sub > summary { list-style:none; cursor:pointer; padding:0.7rem 1rem; font-size:0.92rem; font-weight:600; color:var(--text); display:flex; align-items:center; gap:0.6rem; user-select:none; transition:background 0.15s; }
+.acc-sub > summary::-webkit-details-marker { display:none; }
+.acc-sub > summary:hover { background:#F5F2EC; }
+.acc-sub > summary::before { content:'▶'; font-size:0.62rem; color:var(--text-light); transition:transform 0.2s; display:inline-block; }
+.acc-sub[open] > summary::before { transform:rotate(90deg); }
+.acc-sub > summary .count { font-size:0.75rem; font-weight:500; color:var(--text-light); margin-left:auto; }
+.acc-sub > summary .disc-tag { margin-left:0.3rem; }
+.acc-sub > .acc-body { padding:0.7rem 1rem 1rem; border-top:1px solid var(--border); background:var(--card-bg); }
+
+/* Quick-jump nav */
+.jump-nav { background:var(--uq-purple); padding:0.5rem 2rem; display:flex; gap:1rem; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.15); }
+.jump-nav a { color:rgba(255,255,255,0.85); text-decoration:none; font-size:0.83rem; padding:0.25rem 0.6rem; border-radius:4px; transition:all 0.15s; }
+.jump-nav a:hover { background:rgba(255,255,255,0.15); color:#fff; }
+
+/* Hub Activity styles */
+.activity-subnav { display:flex; gap:0.4rem; margin-bottom:1.2rem; border-bottom:1px solid var(--border); padding-bottom:0.5rem; flex-wrap:wrap; }
+.activity-subnav button { padding:0.4rem 0.9rem; background:#fff; border:1px solid var(--border); border-radius:6px; font-size:0.83rem; color:var(--text-light); cursor:pointer; transition:all 0.15s; }
+.activity-subnav button:hover { color:var(--uq-purple); border-color:var(--uq-purple); }
+.activity-subnav button.active { background:var(--uq-purple); color:#fff; border-color:var(--uq-purple); font-weight:600; }
+.activity-section { display:none; }
+.activity-section.active { display:block; }
+
+/* Meetings list */
+.meeting-list { display:flex; flex-direction:column; gap:0.7rem; }
+.meeting-row { background:var(--card-bg); border:1px solid var(--border); border-left:4px solid var(--accent-meeting); border-radius:8px; padding:0.9rem 1.1rem; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; }
+.meeting-row .m-main { flex:1; min-width:240px; }
+.meeting-row .m-date { font-size:0.78rem; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; }
+.meeting-row .m-title { font-size:1rem; font-weight:600; margin:0.1rem 0; }
+.meeting-row .m-meta { font-size:0.83rem; color:var(--text-light); }
+.meeting-row .m-actions { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.meeting-row .m-actions a { font-size:0.78rem; color:var(--uq-purple); text-decoration:none; padding:0.25rem 0.7rem; border:1px solid var(--uq-purple); border-radius:4px; transition:all 0.2s; }
+.meeting-row .m-actions a:hover { background:var(--uq-purple); color:#fff; }
+
+/* Activities cards */
+.activity-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1rem; }
+.activity-card { background:var(--card-bg); border:1px solid var(--border); border-top:4px solid var(--accent-activity); border-radius:8px; padding:1rem 1.1rem; }
+.activity-card .a-date { font-size:0.78rem; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; }
+.activity-card .a-title { font-size:1rem; font-weight:600; margin:0.2rem 0; }
+.activity-card .a-type { display:inline-block; font-size:0.7rem; padding:0.1rem 0.5rem; border-radius:10px; background:var(--accent-activity); color:#fff; font-weight:600; margin-bottom:0.4rem; }
+.activity-card .a-desc { font-size:0.85rem; color:var(--text-light); line-height:1.45; }
+
+/* Achievement filter chips */
+.filter-bar { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:0.8rem 1rem; margin-bottom:1rem; display:flex; flex-direction:column; gap:0.5rem; }
+.filter-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+.filter-label { font-size:0.78rem; font-weight:600; color:var(--text-light); text-transform:uppercase; letter-spacing:0.4px; min-width:55px; }
+.chip { padding:0.25rem 0.7rem; background:#fff; border:1px solid var(--border); border-radius:14px; font-size:0.78rem; cursor:pointer; transition:all 0.15s; color:var(--text); }
+.chip:hover { border-color:var(--uq-purple); }
+.chip.active { background:var(--uq-purple); color:#fff; border-color:var(--uq-purple); font-weight:600; }
+.filter-select { padding:0.3rem 0.6rem; border:1px solid var(--border); border-radius:6px; font-size:0.83rem; background:#fff; color:var(--text); font-family:inherit; min-width:200px; cursor:pointer; }
+.filter-select:focus { outline:none; border-color:var(--uq-purple); box-shadow:0 0 0 2px rgba(81,36,122,0.15); }
+.chip.type-pub.active { background:var(--accent-pub); border-color:var(--accent-pub); }
+.chip.type-report.active { background:var(--accent-report); border-color:var(--accent-report); }
+.chip.type-book.active { background:var(--accent-book); border-color:var(--accent-book); }
+.chip.type-grant.active { background:var(--accent-grant); border-color:var(--accent-grant); }
+.chip.type-leadership.active { background:var(--accent-leadership); border-color:var(--accent-leadership); }
+.chip.type-engagement.active { background:var(--accent-engagement); border-color:var(--accent-engagement); }
+.chip.type-media.active { background:var(--accent-media); border-color:var(--accent-media); }
+
+/* Achievement stats row */
+.ach-stats { display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+.ach-stat { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:0.4rem 0.8rem; display:flex; flex-direction:column; align-items:flex-start; min-width:80px; border-left:4px solid var(--border); }
+.ach-stat .num { font-size:1.15rem; font-weight:700; line-height:1.1; color:var(--text); }
+.ach-stat .label { font-size:0.7rem; color:var(--text-light); text-transform:uppercase; letter-spacing:0.4px; margin-top:0.1rem; }
+.ach-stat.s-total { border-left-color:var(--uq-purple); }
+.ach-stat.s-pub { border-left-color:var(--accent-pub); }
+.ach-stat.s-q1 { border-left-color:#1B5E20; }
+.ach-stat.s-if { border-left-color:#37474F; }
+.ach-stat.s-grant { border-left-color:var(--accent-grant); }
+.ach-stat.s-leadership { border-left-color:var(--accent-leadership); }
+.ach-stat.s-engagement { border-left-color:var(--accent-engagement); }
+.ach-stat.s-report { border-left-color:var(--accent-report); }
+.ach-stat.s-book { border-left-color:var(--accent-book); }
+.ach-stat.s-media { border-left-color:var(--accent-media); }
+
+/* Achievement timeline */
+.timeline { position:relative; padding-left:1.5rem; }
+.timeline::before { content:''; position:absolute; left:0.4rem; top:0.5rem; bottom:0.5rem; width:2px; background:var(--border); }
+.timeline-item { position:relative; margin-bottom:1rem; background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:0.9rem 1.1rem; }
+.timeline-item::before { content:''; position:absolute; left:-1.45rem; top:1.1rem; width:0.7rem; height:0.7rem; border-radius:50%; background:var(--uq-purple); border:2px solid #fff; box-shadow:0 0 0 2px var(--border); }
+.timeline-item.type-pub::before { background:var(--accent-pub); }
+.timeline-item.type-report::before { background:var(--accent-report); }
+.timeline-item.type-book::before { background:var(--accent-book); }
+.timeline-item.type-grant::before { background:var(--accent-grant); }
+.timeline-item.type-leadership::before { background:var(--accent-leadership); }
+.timeline-item.type-engagement::before { background:var(--accent-engagement); }
+.timeline-item.type-media::before { background:var(--accent-media); }
+.timeline-item .t-head { display:flex; justify-content:space-between; gap:0.6rem; align-items:flex-start; flex-wrap:wrap; margin-bottom:0.3rem; }
+.timeline-item .t-date { font-size:0.78rem; color:var(--text-light); font-weight:600; text-transform:uppercase; letter-spacing:0.4px; white-space:nowrap; }
+.timeline-item .t-type-tag { font-size:0.68rem; padding:0.12rem 0.5rem; border-radius:10px; color:#fff; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; }
+.t-type-tag.type-pub { background:var(--accent-pub); }
+.t-type-tag.type-report { background:var(--accent-report); }
+.t-type-tag.type-book { background:var(--accent-book); }
+.t-type-tag.type-grant { background:var(--accent-grant); }
+.t-type-tag.type-leadership { background:var(--accent-leadership); }
+.t-type-tag.type-engagement { background:var(--accent-engagement); }
+.t-type-tag.type-media { background:var(--accent-media); }
+
+/* Journal venue + ranking badges */
+.t-venue { font-size:0.85rem; color:var(--text); margin-top:0.3rem; font-style:italic; }
+.t-coauth { font-size:0.82rem; color:var(--text-light); margin-top:0.15rem; line-height:1.4; }
+.j-badges { display:inline-flex; gap:0.3rem; margin-left:0.4rem; vertical-align:middle; flex-wrap:wrap; }
+.j-badge { font-size:0.65rem; font-weight:700; padding:0.1rem 0.4rem; border-radius:4px; letter-spacing:0.3px; }
+.j-q1 { background:#1B5E20; color:#fff; }
+.j-q2 { background:#388E3C; color:#fff; }
+.j-q3 { background:#FBC02D; color:#222; }
+.j-q4 { background:#E64A19; color:#fff; }
+.j-if  { background:#37474F; color:#fff; }
+.j-abdc-Astar, .j-abdc-Aplus { background:#4A148C; color:#fff; }
+.j-abdc-A { background:#6A1B9A; color:#fff; }
+.j-abdc-B { background:#7B1FA2; color:#fff; }
+.j-abdc-C { background:#9C27B0; color:#fff; }
+.timeline-item .t-member { font-size:0.95rem; font-weight:600; }
+.timeline-item .t-detail { font-size:0.86rem; color:var(--text); margin-top:0.2rem; line-height:1.45; }
+.timeline-item .t-link { font-size:0.78rem; color:var(--uq-purple); text-decoration:none; margin-top:0.4rem; display:inline-block; }
+.timeline-item .t-link:hover { text-decoration:underline; }
+
+.empty-state { background:var(--card-bg); border:2px dashed var(--border); border-radius:8px; padding:2rem; text-align:center; color:var(--text-light); font-size:0.9rem; }
+
+/* Member login */
+.login-wrap { position:absolute; top:1.2rem; right:1.5rem; }
+.login-btn { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.4); color:#fff; padding:0.35rem 0.9rem; border-radius:6px; font-size:0.8rem; cursor:pointer; transition:all 0.15s; font-family:inherit; }
+.login-btn:hover { background:rgba(255,255,255,0.25); }
+.login-status { font-size:0.75rem; color:rgba(255,255,255,0.85); margin-right:0.6rem; }
+.internal-only { display:none; }
+body.internal-unlocked .stat-pill.internal-only { display:flex; }
+body.internal-unlocked .tab-btn.internal-only { display:inline-block; }
+body.internal-unlocked .panel.internal-only.active { display:block; }
+body.internal-unlocked a.internal-only { display:inline-block; }
+
+
 footer { text-align:center; padding:1.5rem; color:var(--text-light); font-size:0.82rem; border-top:1px solid var(--border); }
 footer a { color:var(--uq-purple); }
 @media (max-width:700px) { .grid { grid-template-columns:1fr; } header h1 { font-size:1.4rem; } .tab-btn { padding:0.5rem 0.7rem; font-size:0.78rem; } }
@@ -111,130 +274,487 @@ footer a { color:var(--uq-purple); }
 <body>
 
 <header>
+  <div class="login-wrap">
+    <span class="login-status" id="login-status"></span>
+    <button class="login-btn" id="login-btn" onclick="openLogin()">Member Login</button>
+  </div>
   <h1>Sustainable Business Research Hub</h1>
   <p>A cross-disciplinary research network advancing sustainability scholarship across the UQ Business School</p>
 </header>
 
+
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="leadership">Leadership</button>
-  <button class="tab-btn" data-tab="all">All <span class="cnt">38</span></button>
-  <div class="tab-sep"></div>
-  <button class="tab-btn" data-tab="Accounting">Accounting <span class="cnt">13</span></button>
-  <button class="tab-btn" data-tab="Finance">Finance <span class="cnt">9</span></button>
-  <button class="tab-btn" data-tab="Management">Management <span class="cnt">3</span></button>
-  <button class="tab-btn" data-tab="Tourism">Tourism <span class="cnt">6</span></button>
-  <button class="tab-btn" data-tab="S&amp;E">Strategy &amp; Entrepreneurship <span class="cnt">6</span></button>
-  <button class="tab-btn" data-tab="BIS">BIS <span class="cnt">1</span></button>
-  <div class="tab-sep"></div>
-  <button class="tab-btn" data-tab="overview">Overview</button>
+  <button class="tab-btn" data-tab="researchers">Researchers <span class="cnt" id="tab-researcher-count">38</span></button>
+  <button class="tab-btn" data-tab="achievements">Achievements <span class="cnt" id="tab-ach-count">44</span></button>
+  <button class="tab-btn internal-only" data-tab="meetings">Meeting Minutes</button>
+  <button class="tab-btn" data-tab="activities">Activities &amp; Events</button>
+  <button class="tab-btn" data-tab="about">About</button>
 </div>
 
-<!-- LEADERSHIP PANEL -->
+<main class="hub-main">
+
+<!-- LEADERSHIP -->
 <div class="panel active" id="panel-leadership">
-  <div class="stats-row">
-    <div class="stat-pill"><div class="num">38</div><div class="label">Researchers</div></div>
-    <div class="stat-pill"><div class="num">6</div><div class="label">Disciplines</div></div>
-    <div class="stat-pill"><div class="num">28</div><div class="label">Staff</div></div>
-    <div class="stat-pill"><div class="num">10</div><div class="label">HDR</div></div>
-    <div class="stat-pill"><div class="num">$11k</div><div class="label">2026 Budget</div></div>
-  </div>
-
-  <div class="sec-head">Confirmed Roles</div>
-  <table class="roles-tbl">
-    <tr><th>Role</th><th>Person</th><th>Responsibilities</th></tr>
-    <tr><td>Hub Co-Lead</td><td>Prof Kath Herbohn</td><td>Strategic direction, budget oversight, partnership development, BCSDA engagement</td></tr>
-    <tr><td>Hub Co-Lead</td><td>A/Prof Muhammad Nadeem</td><td>Strategic direction, research agenda, governance, reporting</td></tr>
-    <tr><td>Internal Engagement Lead</td><td>Dr Saphira Rekker</td><td>Research directory, staff engagement, roundtables, cross-discipline collaboration</td></tr>
-    <tr><td>ECA/HDR Engagement</td><td>Katie Meissner &amp; Zan Ye</td><td>Early career academic and HDR workshops, mentoring coordination</td></tr>
-    <tr><td>External Engagement</td><td>Natalie Peng &amp; Shahrzad Roohy Gohar</td><td>Industry partnerships, external communications, partner event coordination</td></tr>
-  </table>
-
-  <div class="sec-head">Proposed Roles (to confirm with Kath)</div>
-  <div class="grid">
-    <div class="tbc-card">
-      <div class="role-label">Events &amp; Communications</div>
-      <div class="name">To be confirmed</div>
-      <div class="desc">Event coordination, newsletter, social media, Sustain QLD event (August 2026)</div>
+  <div>
+    <div class="stats-row">
+      <div class="stat-pill"><div class="num">38</div><div class="label">Researchers</div></div>
+      <div class="stat-pill"><div class="num">6</div><div class="label">Disciplines</div></div>
+      <div class="stat-pill"><div class="num">28</div><div class="label">Staff</div></div>
+      <div class="stat-pill"><div class="num">10</div><div class="label">HDR</div></div>
     </div>
-    <div class="tbc-card">
-      <div class="role-label">Research Impact &amp; Grants</div>
-      <div class="name">To be confirmed</div>
-      <div class="desc">Grant pipeline coordination, impact tracking, cross-disciplinary proposal development</div>
-    </div>
+
+    <div class="sec-head">Confirmed Roles</div>
+    <table class="roles-tbl">
+      <tr><th>Role</th><th>Person</th><th>Responsibilities</th></tr>
+      <tr><td>Hub Co-Lead</td><td>Prof Kath Herbohn</td><td>Strategic direction, budget oversight, partnership development, BCSDA engagement</td></tr>
+      <tr><td>Hub Co-Lead</td><td class="tbc">TBA</td><td>Strategic direction, research agenda, governance, reporting</td></tr>
+      <tr><td>Internal Engagement Lead</td><td>Dr Saphira Rekker</td><td>Research directory, staff engagement, roundtables, cross-discipline collaboration; events &amp; communications; research impact tracking and grant pipeline coordination</td></tr>
+      <tr><td>ECA/HDR Engagement</td><td>Katie Meissner &amp; Zan Ye</td><td>Early career academic and HDR workshops, mentoring coordination</td></tr>
+      <tr><td>External Engagement</td><td>Natalie Peng &amp; Shahrzad Roohy Gohar</td><td>Industry partnerships, external communications, partner event coordination</td></tr>
+    </table>
   </div>
 </div>
 
-<!-- RESEARCHERS PANEL (All + discipline-filtered) -->
+<!-- RESEARCHERS -->
 <div class="panel" id="panel-researchers">
-  <div class="search-wrap">
-    <input type="text" class="search-box" id="main-search" placeholder="Search by name or research focus...">
+  <div>
+    <div class="view-toggle">
+      <span class="vt-label">View by:</span>
+      <button class="vt-btn active" data-view="discipline">Discipline</button>
+      <button class="vt-btn" data-view="topic">Topic</button>
+    </div>
+    <div class="search-wrap">
+      <input type="text" class="search-box" id="main-search" placeholder="Search by name or research focus...">
+    </div>
+
+    <!-- Topic view (initially hidden, populated by JS) -->
+    <div id="topic-container" class="is-hidden"></div>
+
+    <!-- Discipline view -->
+    <div id="discipline-container">
+
+    <details class="acc-sub" data-disc="Accounting">
+      <summary><span class="disc-tag accounting">Accounting</span> <span class="count">13 staff &middot; 4 HDR</span></summary>
+      <div class="acc-body">
+        <div class="grid" id="grid-Accounting-staff"></div>
+        <div class="sec-head" style="margin-top:1rem; font-size:0.85rem;">HDR Candidates</div>
+        <div class="grid" id="grid-Accounting-hdr"></div>
+      </div>
+    </details>
+
+    <details class="acc-sub" data-disc="Finance">
+      <summary><span class="disc-tag finance">Finance</span> <span class="count">9 staff &middot; 2 HDR</span></summary>
+      <div class="acc-body">
+        <div class="grid" id="grid-Finance-staff"></div>
+        <div class="sec-head" style="margin-top:1rem; font-size:0.85rem;">HDR Candidates</div>
+        <div class="grid" id="grid-Finance-hdr"></div>
+      </div>
+    </details>
+
+    <details class="acc-sub" data-disc="Management">
+      <summary><span class="disc-tag management">Management</span> <span class="count">3 staff</span></summary>
+      <div class="acc-body">
+        <div class="grid" id="grid-Management-staff"></div>
+        <div class="grid" id="grid-Management-hdr"></div>
+      </div>
+    </details>
+
+    <details class="acc-sub" data-disc="Tourism">
+      <summary><span class="disc-tag tourism">Tourism</span> <span class="count">6 staff &middot; 2 HDR</span></summary>
+      <div class="acc-body">
+        <div class="grid" id="grid-Tourism-staff"></div>
+        <div class="sec-head" style="margin-top:1rem; font-size:0.85rem;">HDR Candidates</div>
+        <div class="grid" id="grid-Tourism-hdr"></div>
+      </div>
+    </details>
+
+    <details class="acc-sub" data-disc="S&amp;E">
+      <summary><span class="disc-tag se">Strategy &amp; Entrepreneurship</span> <span class="count">6 staff &middot; 2 HDR</span></summary>
+      <div class="acc-body">
+        <div class="grid" id="grid-SE-staff"></div>
+        <div class="sec-head" style="margin-top:1rem; font-size:0.85rem;">HDR Candidates</div>
+        <div class="grid" id="grid-SE-hdr"></div>
+      </div>
+    </details>
+
+    <details class="acc-sub" data-disc="BIS">
+      <summary><span class="disc-tag bis">BIS</span> <span class="count">1 staff</span></summary>
+      <div class="acc-body">
+        <div class="grid" id="grid-BIS-staff"></div>
+      </div>
+    </details>
+
+    </div><!-- /discipline-container -->
+
+    <div class="no-results is-hidden" id="no-results">No researchers match your search.</div>
   </div>
-  <div class="sec-head" id="staff-head">Academic Staff</div>
-  <div class="grid" id="staff-grid"></div>
-  <div class="sec-head" id="hdr-head">HDR Candidates</div>
-  <div class="grid" id="hdr-grid"></div>
-  <div class="no-results is-hidden" id="no-results">No researchers match your search.</div>
 </div>
 
-<!-- OVERVIEW PANEL -->
-<div class="panel" id="panel-overview">
-  <div class="sec-head">About the Hub</div>
-  <p style="margin:0.5rem 0 1rem; max-width:700px;">The Sustainable Business Research Hub brings together researchers across disciplines within the UQ Business School. Co-led by Professor Kath Herbohn and Associate Professor Muhammad Nadeem, the Hub fosters cross-disciplinary collaboration on sustainability research, supports early career researchers and HDR candidates, and connects academic expertise with industry and policy partners.</p>
-
-  <div class="sec-head">Contact</div>
-  <p style="margin:0.5rem 0;">Internal Engagement: <a href="mailto:s.rekker@uq.edu.au" style="color:var(--uq-purple)">Dr Saphira Rekker</a> &middot; Hub Co-Lead: <a href="mailto:k.herbohn@uq.edu.au" style="color:var(--uq-purple)">Prof Kath Herbohn</a></p>
+<!-- ACHIEVEMENTS -->
+<div class="panel" id="panel-achievements">
+  <div>
+    <div class="filter-bar">
+      <div class="filter-row">
+        <span class="filter-label">Type</span>
+        <span class="chip type-all active" data-filter="type" data-val="all">All</span>
+        <span class="chip type-pub" data-filter="type" data-val="pub">Publications</span>
+        <span class="chip type-report" data-filter="type" data-val="report">Reports</span>
+        <span class="chip type-book" data-filter="type" data-val="book">Books</span>
+        <span class="chip type-grant" data-filter="type" data-val="grant">Grants</span>
+        <span class="chip type-leadership" data-filter="type" data-val="leadership">Leadership</span>
+        <span class="chip type-engagement" data-filter="type" data-val="engagement">External Engagement</span>
+        <span class="chip type-media" data-filter="type" data-val="media">Media &amp; Impact</span>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Year</span>
+        <span class="chip active" data-filter="year" data-val="all">All</span>
+        <span class="chip" data-filter="year" data-val="2026">2026</span>
+        <span class="chip" data-filter="year" data-val="2025">2025</span>
+        <span class="chip" data-filter="year" data-val="2024">2024</span>
+        <span class="chip" data-filter="year" data-val="2023">2023</span>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Member</span>
+        <select class="filter-select" id="filter-member"><option value="all">All members</option></select>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Month</span>
+        <span class="chip active" data-filter="month" data-val="all">All</span>
+        <span class="chip" data-filter="month" data-val="1">Jan</span>
+        <span class="chip" data-filter="month" data-val="2">Feb</span>
+        <span class="chip" data-filter="month" data-val="3">Mar</span>
+        <span class="chip" data-filter="month" data-val="4">Apr</span>
+        <span class="chip" data-filter="month" data-val="5">May</span>
+        <span class="chip" data-filter="month" data-val="6">Jun</span>
+        <span class="chip" data-filter="month" data-val="7">Jul</span>
+        <span class="chip" data-filter="month" data-val="8">Aug</span>
+        <span class="chip" data-filter="month" data-val="9">Sep</span>
+        <span class="chip" data-filter="month" data-val="10">Oct</span>
+        <span class="chip" data-filter="month" data-val="11">Nov</span>
+        <span class="chip" data-filter="month" data-val="12">Dec</span>
+      </div>
+    </div>
+    <div class="ach-stats" id="ach-stats"></div>
+    <div class="timeline" id="achievement-timeline"></div>
+    <div class="empty-state is-hidden" id="achievement-empty">No achievements match the selected filters.</div>
+  </div>
 </div>
+
+<!-- MEETINGS (internal-only) -->
+<div class="panel internal-only" id="panel-meetings">
+  <div>
+    <p style="margin-bottom:1rem; color:var(--text-light); font-size:0.9rem;">Hub leadership and working group meetings. Click "Minutes" to open the linked document.</p>
+    <div class="meeting-list" id="meeting-list"></div>
+    <div class="empty-state is-hidden" id="meeting-empty">No meetings recorded yet.</div>
+  </div>
+</div>
+
+<!-- ACTIVITIES & EVENTS -->
+<div class="panel" id="panel-activities">
+  <div>
+    <p style="margin-bottom:1rem; color:var(--text-light); font-size:0.9rem;">Hub-organised events, roundtables, and workshops.</p>
+    <div class="activity-grid" id="activity-grid"></div>
+    <div class="empty-state is-hidden" id="activity-empty">No activities scheduled yet.</div>
+  </div>
+</div>
+
+<!-- ABOUT THE HUB -->
+<div class="panel" id="panel-about">
+  <div>
+    <p style="margin:0.5rem 0 1rem; max-width:700px;">The Sustainable Business Research Hub brings together researchers across disciplines within the UQ Business School. Co-led by Professor Kath Herbohn (and a second co-lead TBA), the Hub fosters cross-disciplinary collaboration on sustainability research, supports early career researchers and HDR candidates, and connects academic expertise with industry and policy partners.</p>
+
+    <div class="sec-head">Contact</div>
+    <p style="margin:0.5rem 0;">Internal Engagement: <a href="mailto:s.rekker@uq.edu.au" style="color:var(--uq-purple)">Dr Saphira Rekker</a> &middot; Hub Co-Lead: <a href="mailto:k.herbohn@uq.edu.au" style="color:var(--uq-purple)">Prof Kath Herbohn</a></p>
+  </div>
+</div>
+
+</main>
 
 <footer>
   Sustainable Business Research Hub &middot; UQ Business School &middot; Updated April 2026
 </footer>
 
 <script>
+// ================================================================
+// HUB MEMBER ACCESS — change these two values when you want to rotate
+// ----------------------------------------------------------------
+// SECRET_HASH: visiting Index.html#<this-value> automatically unlocks
+//              internal content. Members can bookmark that URL.
+// HUB_PASSWORD: typed via the "Member Login" button. Same effect as
+//              the secret link.
+// IMPORTANT: This is deterrent-only. The values are visible in
+// the page source. Don't put genuinely confidential info here that
+// would matter if a non-member viewed source. Use SharePoint/UQ SSO
+// for true confidentiality.
+var SECRET_HASH = 'sbrhub';
+var HUB_PASSWORD = 'sbrhub2026';
+// ================================================================
+
+function applyUnlockState() {
+  var hash = window.location.hash.replace('#', '');
+  var unlocked = (hash === SECRET_HASH);
+  if (unlocked) {
+    if (document.body.className.indexOf('internal-unlocked') < 0)
+      document.body.className += ' internal-unlocked';
+    document.getElementById('login-status').textContent = 'Hub member view';
+    document.getElementById('login-btn').textContent = 'Switch to public view';
+    document.getElementById('login-btn').onclick = logout;
+  } else {
+    document.body.className = document.body.className.replace(' internal-unlocked', '');
+    document.getElementById('login-status').textContent = '';
+    document.getElementById('login-btn').textContent = 'Member Login';
+    document.getElementById('login-btn').onclick = openLogin;
+  }
+}
+function openLogin() {
+  var p = window.prompt('Hub member password (ask Saphira if needed):');
+  if (p === null) return;
+  if (p === HUB_PASSWORD) {
+    window.location.hash = SECRET_HASH;
+    applyUnlockState();
+  } else {
+    window.alert('Incorrect password.');
+  }
+}
+function logout() {
+  // Clear the hash without leaving "#" in the URL bar
+  if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
+  else window.location.hash = '';
+  applyUnlockState();
+  // If currently on a now-hidden sub-tab, snap back to Achievements
+  var meetingsBtn = document.querySelector('.act-sub-btn[data-sub="meetings"]');
+  if (meetingsBtn && meetingsBtn.className.indexOf('active') >= 0) {
+    var achBtn = document.querySelector('.act-sub-btn[data-sub="achievements"]');
+    if (achBtn) achBtn.click();
+  }
+}
+window.addEventListener('hashchange', applyUnlockState);
+
+// TOPICS: a researcher can carry 1–3 topic tags. Used for the Topic view.
+// To rename or split a topic, edit this list AND each researcher's `topics` array.
+var TOPICS = [
+  "Climate Finance & Investment",
+  "Sustainability Accounting & Disclosure",
+  "Sustainable Tourism",
+  "Decarbonisation & Climate Transitions",
+  "Climate Risk & Adaptation",
+  "Greenwashing & ESG",
+  "Corporate Governance",
+  "Climate Communication & Psychology",
+  "Responsible Leadership",
+  "Information Systems for Sustainability"
+];
+
 var allStaff = [
-  {name:"Kathleen Herbohn",pos:"Professor",disc:"Accounting",focus:"Corporate social responsibility, environmental reporting, sustainability accounting, climate change disclosure",role:"Hub Co-Lead",uq:"https://researchers.uq.edu.au/researcher/975",gs:"https://scholar.google.com/citations?user=eqAxVwEAAAAJ",em:"k.herbohn@uq.edu.au"},
-  {name:"Muhammad Nadeem",pos:"Associate Professor",disc:"Accounting",focus:"Sustainability accounting, corporate governance, financial disclosure, CSR",role:"Hub Co-Lead",uq:"https://researchers.uq.edu.au/researcher/38347",gs:"https://scholar.google.com/citations?user=XFJ46cEAAAAJ",em:""},
-  {name:"Saphira Rekker",pos:"Senior Research Fellow",disc:"Finance",focus:"Corporate climate performance measurement, Paris Agreement alignment, carbon budget assessment",role:"Internal Engagement Lead",uq:"https://researchers.uq.edu.au/researcher/21972",gs:"https://scholar.google.com/citations?user=uXFwaTcAAAAJ",em:"s.rekker@uq.edu.au"},
-  {name:"Neal Ashkanasy",pos:"Emeritus Professor",disc:"Management",focus:"Emotions in the workplace, organisational behaviour, leadership and ethics",role:"",uq:"",gs:"https://scholar.google.com/citations?user=Q_Rb3rgAAAAJ",em:""},
-  {name:"Peter Clarkson",pos:"Professor",disc:"Accounting",focus:"Voluntary disclosure, firm valuation, environmental performance accounting",role:"",uq:"https://researchers.uq.edu.au/researcher/184",gs:"https://scholar.google.com/citations?user=6fllVQQAAAAJ",em:""},
-  {name:"Sara Dolnicar",pos:"Professor",disc:"Tourism",focus:"Market segmentation, sustainable tourism, environmental sustainability in hospitality",role:"",uq:"https://researchers.uq.edu.au/researcher/2996",gs:"https://scholar.google.com/citations?user=e74qj60AAAAJ",em:""},
-  {name:"Matthew Hornsey",pos:"Professor",disc:"Management",focus:"Climate scepticism, misinformation, strategies to accelerate decarbonisation support",role:"",uq:"https://researchers.uq.edu.au/researcher/375",gs:"https://scholar.google.com/citations?user=TDA9gz4AAAAJ",em:""},
-  {name:"Daniel Nyberg",pos:"Professor",disc:"S&E",focus:"Climate change politics, corporate capitalism, sustainability and democracy",role:"",uq:"https://researchers.uq.edu.au/researcher/39152",gs:"https://scholar.google.com/citations?user=UmA9busAAAAJ",em:""},
-  {name:"Nicola Pless",pos:"Honorary Professor",disc:"Management",focus:"Responsible leadership, business ethics, ESG, organisational sustainability",role:"",uq:"",gs:"https://scholar.google.com/citations?user=wZvZAccAAAAJ",em:""},
-  {name:"Belinda Wade",pos:"Professor",disc:"S&E",focus:"Organisational decarbonisation, climate transitions, sustainability reporting",role:"",uq:"https://researchers.uq.edu.au/researcher/18470",gs:"https://scholar.google.com/citations?user=YRvhhbsAAAAJ",em:""},
-  {name:"Jacquie Humphrey",pos:"Associate Professor",disc:"Finance",focus:"Sustainable finance, responsible investment, climate equity, ESG",role:"",uq:"https://researchers.uq.edu.au/researcher/6143",gs:"https://scholar.google.com.au/citations?user=XtlzitQAAAAJ",em:""},
-  {name:"Bobae Choi",pos:"Associate Professor",disc:"Accounting",focus:"Carbon accounting and reporting, corporate governance, ESG",role:"",uq:"",gs:"https://scholar.google.com/citations?user=nTVFOnQAAAAJ",em:""},
-  {name:"Ya-Yen Sun",pos:"Associate Professor",disc:"Tourism",focus:"Tourism carbon footprinting, UN SDG 12 and 13, sustainable tourism decarbonisation",role:"",uq:"https://researchers.uq.edu.au/researcher/21340",gs:"https://scholar.google.com/citations?user=YfAyc-cAAAAJ",em:""},
-  {name:"Hasibul Chowdhury",pos:"Senior Lecturer",disc:"Finance",focus:"Corporate policies around climate change adaptation, corporate finance",role:"",uq:"https://researchers.uq.edu.au/researcher/23627",gs:"https://scholar.google.com/citations?user=h59AJ2EAAAAJ",em:""},
-  {name:"Lin Mi",pos:"Senior Lecturer",disc:"Finance",focus:"Climate risk and payout flexibility, corporate finance, real estate finance",role:"",uq:"https://researchers.uq.edu.au/researcher/2164",gs:"https://scholar.google.com/citations?user=vtBDL6wAAAAJ",em:""},
-  {name:"Lily Nguyen",pos:"Senior Lecturer",disc:"Finance",focus:"Climate finance, green innovation, corporate governance",role:"",uq:"https://researchers.uq.edu.au/researcher/23730",gs:"https://scholar.google.com/citations?user=9XuG6-8AAAAJ",em:""},
-  {name:"Suman Neupane-Joshi",pos:"Senior Lecturer",disc:"Finance",focus:"Environmental sustainability and finance, investor behaviour, emerging markets",role:"",uq:"https://researchers.uq.edu.au/researcher/20107",gs:"https://scholar.google.com/citations?user=zLHjnbgAAAAJ",em:""},
-  {name:"Michael Turner",pos:"Senior Lecturer",disc:"Accounting",focus:"ESG disclosure, management accounting, corporate governance",role:"",uq:"https://researchers.uq.edu.au/researcher/2160",gs:"https://scholar.google.com/citations?user=JuPDEVEAAAAJ",em:""},
-  {name:"Peter Do",pos:"Senior Lecturer",disc:"Accounting",focus:"Climate-related financial reporting, sustainability disclosure, peer effects",role:"",uq:"https://researchers.uq.edu.au/researcher/20954",gs:"https://scholar.google.com/citations?user=9niWzp4AAAAJ",em:""},
-  {name:"Csilla Demeter",pos:"Research Fellow",disc:"S&E",focus:"How corporations respond to climate change, energy transitions, strategy",role:"",uq:"https://about.uq.edu.au/experts/45783",gs:"https://scholar.google.com/citations?user=qjdhIQIAAAAJ",em:""},
-  {name:"Noreen Breakey",pos:"Lecturer",disc:"Tourism",focus:"Sustainable tourism management, community-based tourism, hospitality education",role:"",uq:"https://researchers.uq.edu.au/researcher/1038",gs:"",em:""},
-  {name:"Mireia Guix",pos:"Lecturer",disc:"Tourism",focus:"Sustainability in tourism, carbon offsetting, climate adaptation, modern slavery in supply chains",role:"",uq:"https://researchers.uq.edu.au/researcher/34288",gs:"",em:""},
-  {name:"Byungki Kim",pos:"Lecturer",disc:"Accounting",focus:"ESG issues in accounting, financial reporting, corporate governance",role:"",uq:"https://researchers.uq.edu.au/researcher/21753",gs:"",em:""},
-  {name:"Katie Meissner",pos:"Lecturer",disc:"S&E",focus:"Climate resilience, risk management, insurance, urban climate adaptation",role:"ECA/HDR Engagement",uq:"https://researchers.uq.edu.au/researcher/32807",gs:"",em:""},
-  {name:"Natalie Peng",pos:"Lecturer",disc:"Accounting",focus:"Greenwashing, sustainability, superannuation, financial disclosure",role:"External Engagement",uq:"https://researchers.uq.edu.au/researcher/16010",gs:"",em:""},
-  {name:"Shahrzad Roohy Gohar",pos:"Lecturer",disc:"BIS",focus:"Environmental measurement and representation, business process management, IS for sustainability",role:"External Engagement",uq:"https://about.uq.edu.au/experts/17018",gs:"",em:""},
-  {name:"Yang Xu",pos:"Lecturer",disc:"Accounting",focus:"Audit and assurance of sustainability reporting, financial crises",role:"",uq:"https://researchers.uq.edu.au/researcher/20084",gs:"",em:""},
-  {name:"Rashed Asger",pos:"Teaching Associate",disc:"Finance",focus:"Climate, social development, sustainability",role:"",uq:"",gs:"",em:""}
+  {name:"Kathleen Herbohn",pos:"Professor",disc:"Accounting",focus:"Corporate social responsibility, environmental reporting, sustainability accounting, climate change disclosure",role:"Hub Co-Lead",topics:["Sustainability Accounting & Disclosure","Greenwashing & ESG"],uq:"https://researchers.uq.edu.au/researcher/975",gs:"https://scholar.google.com/citations?user=eqAxVwEAAAAJ",em:"k.herbohn@uq.edu.au"},
+  {name:"Muhammad Nadeem",pos:"Associate Professor",disc:"Accounting",focus:"Sustainability accounting, corporate governance, financial disclosure, CSR",role:"",topics:["Sustainability Accounting & Disclosure","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/38347",gs:"https://scholar.google.com/citations?user=XFJ46cEAAAAJ",em:""},
+  {name:"Saphira Rekker",pos:"Senior Research Fellow",disc:"Finance",focus:"Corporate climate performance measurement, Paris Agreement alignment, carbon budget assessment",role:"Internal Engagement Lead",topics:["Climate Finance & Investment","Decarbonisation & Climate Transitions"],uq:"https://researchers.uq.edu.au/researcher/21972",gs:"https://scholar.google.com/citations?user=uXFwaTcAAAAJ",em:"s.rekker@uq.edu.au"},
+  {name:"Neal Ashkanasy",pos:"Emeritus Professor",disc:"Management",focus:"Emotions in the workplace, organisational behaviour, leadership and ethics",role:"",topics:["Responsible Leadership"],uq:"",gs:"https://scholar.google.com/citations?user=Q_Rb3rgAAAAJ",em:""},
+  {name:"Peter Clarkson",pos:"Professor",disc:"Accounting",focus:"Voluntary disclosure, firm valuation, environmental performance accounting",role:"",topics:["Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/184",gs:"https://scholar.google.com/citations?user=6fllVQQAAAAJ",em:""},
+  {name:"Sara Dolnicar",pos:"Professor",disc:"Tourism",focus:"Market segmentation, sustainable tourism, environmental sustainability in hospitality",role:"",topics:["Sustainable Tourism"],uq:"https://researchers.uq.edu.au/researcher/2996",gs:"https://scholar.google.com/citations?user=e74qj60AAAAJ",em:""},
+  {name:"Matthew Hornsey",pos:"Professor",disc:"Management",focus:"Climate scepticism, misinformation, strategies to accelerate decarbonisation support",role:"",topics:["Climate Communication & Psychology","Decarbonisation & Climate Transitions"],uq:"https://researchers.uq.edu.au/researcher/375",gs:"https://scholar.google.com/citations?user=TDA9gz4AAAAJ",em:""},
+  {name:"Daniel Nyberg",pos:"Professor",disc:"S&E",focus:"Climate change politics, corporate capitalism, sustainability and democracy",role:"",topics:["Decarbonisation & Climate Transitions","Climate Communication & Psychology"],uq:"https://researchers.uq.edu.au/researcher/39152",gs:"https://scholar.google.com/citations?user=UmA9busAAAAJ",em:""},
+  {name:"Nicola Pless",pos:"Honorary Professor",disc:"Management",focus:"Responsible leadership, business ethics, ESG, organisational sustainability",role:"",topics:["Responsible Leadership","Greenwashing & ESG"],uq:"",gs:"https://scholar.google.com/citations?user=wZvZAccAAAAJ",em:""},
+  {name:"Belinda Wade",pos:"Professor",disc:"S&E",focus:"Organisational decarbonisation, climate transitions, sustainability reporting",role:"",topics:["Decarbonisation & Climate Transitions","Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/18470",gs:"https://scholar.google.com/citations?user=YRvhhbsAAAAJ",em:""},
+  {name:"Jacquie Humphrey",pos:"Associate Professor",disc:"Finance",focus:"Sustainable finance, responsible investment, climate equity, ESG",role:"",topics:["Climate Finance & Investment","Greenwashing & ESG"],uq:"https://researchers.uq.edu.au/researcher/6143",gs:"https://scholar.google.com.au/citations?user=XtlzitQAAAAJ",em:""},
+  {name:"Bobae Choi",pos:"Associate Professor",disc:"Accounting",focus:"Carbon accounting and reporting, corporate governance, ESG",role:"",topics:["Sustainability Accounting & Disclosure","Corporate Governance","Greenwashing & ESG"],uq:"",gs:"https://scholar.google.com/citations?user=nTVFOnQAAAAJ",em:""},
+  {name:"Ya-Yen Sun",pos:"Associate Professor",disc:"Tourism",focus:"Tourism carbon footprinting, UN SDG 12 and 13, sustainable tourism decarbonisation",role:"",topics:["Sustainable Tourism","Decarbonisation & Climate Transitions"],uq:"https://researchers.uq.edu.au/researcher/21340",gs:"https://scholar.google.com/citations?user=YfAyc-cAAAAJ",em:""},
+  {name:"Hasibul Chowdhury",pos:"Senior Lecturer",disc:"Finance",focus:"Corporate policies around climate change adaptation, corporate finance",role:"",topics:["Climate Risk & Adaptation","Climate Finance & Investment"],uq:"https://researchers.uq.edu.au/researcher/23627",gs:"https://scholar.google.com/citations?user=h59AJ2EAAAAJ",em:""},
+  {name:"Lin Mi",pos:"Senior Lecturer",disc:"Finance",focus:"Climate risk and payout flexibility, corporate finance, real estate finance",role:"",topics:["Climate Risk & Adaptation","Climate Finance & Investment"],uq:"https://researchers.uq.edu.au/researcher/2164",gs:"https://scholar.google.com/citations?user=vtBDL6wAAAAJ",em:""},
+  {name:"Lily Nguyen",pos:"Senior Lecturer",disc:"Finance",focus:"Climate finance, green innovation, corporate governance",role:"",topics:["Climate Finance & Investment","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/23730",gs:"https://scholar.google.com/citations?user=9XuG6-8AAAAJ",em:""},
+  {name:"Suman Neupane-Joshi",pos:"Senior Lecturer",disc:"Finance",focus:"Environmental sustainability and finance, investor behaviour, emerging markets",role:"",topics:["Climate Finance & Investment"],uq:"https://researchers.uq.edu.au/researcher/20107",gs:"https://scholar.google.com/citations?user=zLHjnbgAAAAJ",em:""},
+  {name:"Michael Turner",pos:"Senior Lecturer",disc:"Accounting",focus:"ESG disclosure, management accounting, corporate governance",role:"",topics:["Sustainability Accounting & Disclosure","Greenwashing & ESG","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/2160",gs:"https://scholar.google.com/citations?user=JuPDEVEAAAAJ",em:""},
+  {name:"Peter Do",pos:"Senior Lecturer",disc:"Accounting",focus:"Climate-related financial reporting, sustainability disclosure, peer effects",role:"",topics:["Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/20954",gs:"https://scholar.google.com/citations?user=9niWzp4AAAAJ",em:""},
+  {name:"Csilla Demeter",pos:"Research Fellow",disc:"S&E",focus:"How corporations respond to climate change, energy transitions, strategy",role:"",topics:["Decarbonisation & Climate Transitions"],uq:"https://about.uq.edu.au/experts/45783",gs:"https://scholar.google.com/citations?user=qjdhIQIAAAAJ",em:""},
+  {name:"Noreen Breakey",pos:"Lecturer",disc:"Tourism",focus:"Sustainable tourism management, community-based tourism, hospitality education",role:"",topics:["Sustainable Tourism"],uq:"https://researchers.uq.edu.au/researcher/1038",gs:"",em:""},
+  {name:"Mireia Guix",pos:"Lecturer",disc:"Tourism",focus:"Sustainability in tourism, carbon offsetting, climate adaptation, modern slavery in supply chains",role:"",topics:["Sustainable Tourism","Climate Risk & Adaptation"],uq:"https://researchers.uq.edu.au/researcher/34288",gs:"",em:""},
+  {name:"Byungki Kim",pos:"Lecturer",disc:"Accounting",focus:"ESG issues in accounting, financial reporting, corporate governance",role:"",topics:["Sustainability Accounting & Disclosure","Greenwashing & ESG","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/21753",gs:"",em:""},
+  {name:"Katie Meissner",pos:"Lecturer",disc:"S&E",focus:"Climate resilience, risk management, insurance, urban climate adaptation",role:"ECA/HDR Engagement",topics:["Climate Risk & Adaptation"],uq:"https://researchers.uq.edu.au/researcher/32807",gs:"",em:""},
+  {name:"Natalie Peng",pos:"Lecturer",disc:"Accounting",focus:"Greenwashing, sustainability, superannuation, financial disclosure",role:"External Engagement",topics:["Greenwashing & ESG","Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/16010",gs:"",em:""},
+  {name:"Shahrzad Roohy Gohar",pos:"Lecturer",disc:"BIS",focus:"Environmental measurement and representation, business process management, IS for sustainability",role:"External Engagement",topics:["Information Systems for Sustainability"],uq:"https://about.uq.edu.au/experts/17018",gs:"",em:""},
+  {name:"Yang Xu",pos:"Lecturer",disc:"Accounting",focus:"Audit and assurance of sustainability reporting, financial crises",role:"",topics:["Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/20084",gs:"",em:""},
+  {name:"Rashed Asger",pos:"Teaching Associate",disc:"Finance",focus:"Climate, social development, sustainability",role:"",topics:["Climate Finance & Investment"],uq:"",gs:"",em:""}
 ];
 
 var allHDR = [
-  {name:"Kaveen Bachoo",disc:"Accounting",focus:"Mindset of leaders approaching grand challenge of sustainability",uq:"",gs:"",em:""},
-  {name:"Daniel Henshall",disc:"Tourism",focus:"Tourism and natural environment (Supervisor: Jie Wang)",uq:"",gs:"",em:""},
-  {name:"Chen Li",disc:"Accounting",focus:"Auditors' role in sustainability disclosure",uq:"",gs:"",em:""},
-  {name:"Yufan Liu",disc:"Tourism",focus:"Risk communication in tourism contexts",uq:"",gs:"",em:""},
-  {name:"Muhammad Nazaruddin",disc:"Accounting",focus:"State-led sustainability assurance",uq:"",gs:"",em:""},
-  {name:"Mohak Raitani",disc:"Finance",focus:"Climate and biodiversity finance",uq:"",gs:"",em:""},
-  {name:"Carlos Rincon Hurtado",disc:"S&E",focus:"Business models, entrepreneurship, resource mobilisation",uq:"",gs:"",em:""},
-  {name:"Harvey Ruan",disc:"Accounting",focus:"Corporate climate transition reporting",uq:"",gs:"",em:""},
-  {name:"Neil Taylor",disc:"S&E",focus:"Business Sustainability Initiative alignment",uq:"",gs:"",em:""},
-  {name:"Zan Ye",disc:"Finance",focus:"Investor overconfidence and sustainability",role:"ECA/HDR Engagement",uq:"",gs:"",em:""}
+  {name:"Kaveen Bachoo",disc:"Accounting",focus:"Mindset of leaders approaching grand challenge of sustainability",topics:["Responsible Leadership"],uq:"",gs:"",em:""},
+  {name:"Daniel Henshall",disc:"Tourism",focus:"Tourism and natural environment (Supervisor: Jie Wang)",topics:["Sustainable Tourism"],uq:"",gs:"",em:""},
+  {name:"Chen Li",disc:"Accounting",focus:"Auditors' role in sustainability disclosure",topics:["Sustainability Accounting & Disclosure"],uq:"",gs:"",em:""},
+  {name:"Yufan Liu",disc:"Tourism",focus:"Risk communication in tourism contexts",topics:["Sustainable Tourism","Climate Communication & Psychology"],uq:"",gs:"",em:""},
+  {name:"Muhammad Nazaruddin",disc:"Accounting",focus:"State-led sustainability assurance",topics:["Sustainability Accounting & Disclosure"],uq:"",gs:"",em:""},
+  {name:"Mohak Raitani",disc:"Finance",focus:"Climate and biodiversity finance",topics:["Climate Finance & Investment"],uq:"",gs:"",em:""},
+  {name:"Carlos Rincon Hurtado",disc:"S&E",focus:"Business models, entrepreneurship, resource mobilisation",topics:["Decarbonisation & Climate Transitions"],uq:"",gs:"",em:""},
+  {name:"Harvey Ruan",disc:"Accounting",focus:"Corporate climate transition reporting",topics:["Sustainability Accounting & Disclosure","Decarbonisation & Climate Transitions"],uq:"",gs:"",em:""},
+  {name:"Neil Taylor",disc:"S&E",focus:"Business Sustainability Initiative alignment",topics:["Sustainability Accounting & Disclosure"],uq:"",gs:"",em:""},
+  {name:"Zan Ye",disc:"Finance",focus:"Investor overconfidence and sustainability",role:"ECA/HDR Engagement",topics:["Climate Finance & Investment"],uq:"",gs:"",em:""}
+];
+
+// ---- Hub Activity data ----
+
+// JOURNAL METADATA
+// All Impact Factor values are JCR 2024 (released by Clarivate in June 2025) unless flagged.
+// q     = Scimago SJR quartile for the journal's primary subject category
+// if_   = JCR 2024 Impact Factor
+// abdc  = ABDC Journal Quality List 2022 rating (A*/A/B/C); '' if not on ABDC list
+//
+// VERIFICATION STATUS:
+//   Confirmed via web search: NCC, Nat Comms, One Earth, Climatic Change, WIREs CC,
+//     Global Env Change, J Env Psych, Annals of Tourism Research, J Sustain Tourism,
+//     Current Issues in Tourism, J Travel Research, Abacus, Int J Accounting,
+//     Pacific-Basin Finance J, JIFMIM, J Asset Management, JBE, JMS, CGIR, JMI,
+//     California Mgmt Review, Political Psychology, Current Opinion in Psychology
+//   Estimates (verify before publishing externally): Tourism Management (conservative
+//     12.7; Resurchify reports 16.88), China Acct & Finance Review, Leadership,
+//     Current Research in Ecological and Social Psychology, Australasian J Env Mgmt
+var journalMeta = {
+  "Nature Climate Change":                              {q:"Q1", if_:"27.1",  abdc:""},
+  "Nature Communications":                              {q:"Q1", if_:"15.7",  abdc:""},
+  "One Earth":                                          {q:"Q1", if_:"15.3",  abdc:""},
+  "Climatic Change":                                    {q:"Q1", if_:"4.8",   abdc:""},
+  "WIREs Climate Change":                               {q:"Q1", if_:"11.75", abdc:""},
+  "Global Environmental Change":                        {q:"Q1", if_:"10.7",  abdc:"A*"},
+  "Journal of Environmental Psychology":                {q:"Q1", if_:"7.0",   abdc:"A"},
+  "Tourism Management":                                 {q:"Q1", if_:"12.7",  abdc:"A*"},
+  "Annals of Tourism Research":                         {q:"Q1", if_:"7.86",  abdc:"A*"},
+  "Journal of Sustainable Tourism":                     {q:"Q1", if_:"13.09", abdc:"A*"},
+  "Current Issues in Tourism":                          {q:"Q1", if_:"8.31",  abdc:"A"},
+  "Journal of Travel Research":                         {q:"Q1", if_:"14.08", abdc:"A*"},
+  "Abacus":                                             {q:"Q3", if_:"2.3",   abdc:"A*"},
+  "The International Journal of Accounting":            {q:"Q2", if_:"2.18",  abdc:"B"},
+  "Pacific-Basin Finance Journal":                      {q:"Q1", if_:"5.83",  abdc:"A"},
+  "Journal of International Financial Markets, Institutions and Money": {q:"Q1", if_:"6.59", abdc:"A"},
+  "Journal of Asset Management":                        {q:"Q2", if_:"1.4",   abdc:"B"},
+  "China Accounting and Finance Review":                {q:"Q3", if_:"1.5",   abdc:"A"},
+  "Journal of Business Ethics":                         {q:"Q1", if_:"6.7",   abdc:"A"},
+  "Journal of Management Studies":                      {q:"Q1", if_:"10.13", abdc:"A*"},
+  "Corporate Governance: An International Review":      {q:"Q1", if_:"6.08",  abdc:"A"},
+  "Journal of Management Inquiry":                      {q:"Q1", if_:"5.44",  abdc:"B"},
+  "California Management Review":                       {q:"Q1", if_:"7.3",   abdc:"A"},
+  "Leadership":                                         {q:"Q2", if_:"3.5",   abdc:"B"},
+  "Political Psychology":                               {q:"Q1", if_:"3.5",   abdc:""},
+  "Current Opinion in Psychology":                      {q:"Q1", if_:"9.35",  abdc:""},
+  "Current Research in Ecological and Social Psychology": {q:"Q2", if_:"3.0", abdc:""},
+  "Australasian Journal of Environmental Management":   {q:"Q3", if_:"2.0",   abdc:"B"}
+};
+
+// MEETINGS: date format YYYY-MM-DD. 'minutes' is an optional link (relative path or URL).
+var allMeetings = [
+  {date:"2026-04-28", title:"Hub Leadership Meeting (Inaugural)", attendees:"John C., Natalie Peng, Katie Meissner, Zan Ye, Saphira Rekker, Shahrzad Roohy Gohar, Kath Herbohn", notes:"Internal/external engagement updates, HDR & ECA workshop ideas (publishing in sustainability vs. traditional journals, dealing with reviewer rejections, ECA paper-leadership development), governance group to meet monthly, inaugural hub meeting in Sem 1, exploring short courses, industry symposium with BCSDA.", minutes:"Meeting Minutes/SBR Hub Meeting Notes 28042026.docx"}
+];
+
+// ACTIVITIES: type can be 'roundtable', 'workshop', 'event', 'seminar'
+// date format: 'YYYY' or 'YYYY-MM' or 'YYYY-MM-DD'.
+var allActivities = [
+  {date:"2026-08", title:"Sustain QLD 2026", type:"event", desc:"Flagship industry-academia event bringing together sustainability researchers, practitioners, and policymakers across Queensland. (Specific date TBC)"}
+];
+
+// ACHIEVEMENTS
+// type: 'pub' (peer-reviewed journal article — uses journalMeta for ranking badges)
+//       'report' (industry/policy/white-paper report — no ranking)
+//       'book' (book or textbook — no ranking)
+//       'grant' (funded project)
+//       'award' (recognition, editorial appointment, fellowship)
+//       'media' (press, podcast, public commentary, op-ed)
+// date: 'YYYY' or 'YYYY-MM' or 'YYYY-MM-DD'. Use the most precise form you can verify.
+// journal (pub only): must match a key in journalMeta exactly to display ranking.
+// Sources for the seed data: UQ Researcher profiles, UQ Business School news, journal websites, Google Scholar.
+// PLEASE VERIFY publication dates, co-authors, volume/issue numbers, and journal metrics before sharing externally.
+var allAchievements = [
+  // ===== 2026 publications (in press / forthcoming) =====
+  {date:"2026", member:"Belinda Wade, Saphira Rekker, Matthew Hornsey", type:"pub", title:"Beyond Box-Ticking: Improving Climate Scenario Planning", journal:"California Management Review", coauthors:"with MacInnes & Griffiths", link:""},
+  {date:"2026", member:"Sara Dolnicar", type:"pub", title:"Field experiments: Overcoming the limitations of survey experiments for actionable behavioural insights", journal:"Annals of Tourism Research", coauthors:"with Viglia & Kurtaliqi", link:""},
+  {date:"2026", member:"Sara Dolnicar", type:"pub", title:"Does activating home place identity on vacation alter environmentally significant tourist behaviour?", journal:"Tourism Management", coauthors:"with von Briel & Zinn (vol. 113)", link:""},
+  {date:"2026", member:"Matthew Hornsey", type:"pub", title:"Using conversational AI to reduce science skepticism", journal:"Current Opinion in Psychology", coauthors:"with Smith, Pearson, Bretter & Nylund", link:""},
+  {date:"2026", member:"Matthew Hornsey", type:"pub", title:"Who do we trust on climate change, and why?", journal:"Global Environmental Change", coauthors:"with MacInnes, Bretter, Pearson, Fielding & Bersoff", link:""},
+
+  // ===== 2025 publications =====
+  {date:"2025", member:"Saphira Rekker, Jacquie Humphrey, Matthew Hornsey", type:"pub", title:"Balancing simplicity and complexity through corporate emissions benchmarking", journal:"Nature Climate Change", coauthors:"with Axelsson, Bjørn, Greig, Heede et al.", link:""},
+  {date:"2025", member:"Saphira Rekker, Jacquie Humphrey", type:"pub", title:"Mainstream corporate climate methods impose inequitable burdens on emerging economies: evidence from the cement industry", journal:"One Earth", coauthors:"with Rao & Greig", link:""},
+  {date:"2025", member:"Daniel Nyberg", type:"pub", title:"Confronting the climate crisis: fossil fuel hegemony and the need for decarbonization, degrowth, and democracy", journal:"Journal of Management Studies", coauthors:"with Wright (62(8), 3659–3676)", link:""},
+  {date:"2025", member:"Daniel Nyberg", type:"pub", title:"Climate action research: what's holding us back?", journal:"Journal of Management Inquiry", coauthors:"with Andre, Bradbury, Grant, Hastings, Hoffman, Jennings & Wright (34(3), 255–271)", link:""},
+  {date:"2025", member:"Daniel Nyberg", type:"pub", title:"Academic leadership in a warming world: How can business school academics influence climate change action?", journal:"Leadership", coauthors:"", link:""},
+  {date:"2025", member:"Sara Dolnicar", type:"pub", title:"Leveraging social norms and empathy to encourage sustainable air conditioning practices amongst hotel guests", journal:"Journal of Environmental Psychology", coauthors:"with Greene, Birenboim, Zinn, Portmann, Pandey & Grün (vol. 108, 102811)", link:""},
+  {date:"2025", member:"Sara Dolnicar", type:"pub", title:"On the Importance of Field Studies for Testing Theory-Driven Behavioral Change Interventions in (Sustainable) Tourism", journal:"Journal of Travel Research", coauthors:"with Juvan, Zhu & Grün", link:""},
+  {date:"2025", member:"Muhammad Nadeem", type:"pub", title:"Common institutional ownership and climate-related information disclosure: evidence from China", journal:"The International Journal of Accounting", coauthors:"with Li, Zaman & Malik", link:""},
+  {date:"2025", member:"Muhammad Nadeem", type:"pub", title:"Do companies' green credentials enhance trade credit provisions? Global evidence", journal:"Journal of International Financial Markets, Institutions and Money", coauthors:"with Zaman, Atawnah, Banigidadmath & Liu (vol. 103, 102204)", link:""},
+  {date:"2025", member:"Muhammad Nadeem", type:"pub", title:"Do female directors affect the cost of equity capital?", journal:"China Accounting and Finance Review", coauthors:"with Uddin (27(5), 1–39)", link:""},
+  {date:"2025", member:"Ya-Yen Sun", type:"pub", title:"Are emissions from global air transport significantly underestimated?", journal:"Current Issues in Tourism", coauthors:"with Gössling & Humpe", link:""},
+  {date:"2025", member:"Ya-Yen Sun, Mireia Guix", type:"pub", title:"Doing all we can? Destination management organizations' net-zero pledges and their decarbonization plans", journal:"Journal of Sustainable Tourism", coauthors:"with Babakhani", link:""},
+  {date:"2025", member:"Matthew Hornsey", type:"pub", title:"How leading climate movement advocates perceive collective gridlock in social change advocacy", journal:"Political Psychology", coauthors:"", link:""},
+  {date:"2025", member:"Peter Clarkson", type:"pub", title:"International evidence on the cost of public debt issued by private versus public firms", journal:"Pacific-Basin Finance Journal", coauthors:"", link:""},
+
+  // ===== 2024 publications =====
+  {date:"2024-12-11", member:"Ya-Yen Sun", type:"pub", title:"Drivers of global tourism carbon emissions", journal:"Nature Communications", coauthors:"with Faturay, Lenzen, Gössling & Higham — tourism emissions growing 2× faster than rest of economy", link:"https://news.uq.edu.au/2024-12-11-tourism-leads-pack-growing-carbon-emissions"},
+  {date:"2024", member:"Peter Clarkson, Kath Herbohn", type:"pub", title:"The value relevance of a firm's carbon risk profile", journal:"Abacus", coauthors:"with Millar (61(3), 555–601)", link:""},
+  {date:"2024", member:"Matthew Hornsey, Saphira Rekker, Belinda Wade", type:"pub", title:"Publicly expressed climate scepticism is greatest in regions with high CO₂ emissions", journal:"Climatic Change", coauthors:"with Pearson & Greig (177(5), 79)", link:"https://link.springer.com/article/10.1007/s10584-024-03740-3"},
+  {date:"2024", member:"Belinda Wade", type:"pub", title:"Stakeholder engagement: the role of facilitators and gender in 'opening up' conversations and enabling participation", journal:"Australasian Journal of Environmental Management", coauthors:"with Bharadwaj, Kambo, Jensen, Witt, Weder, Phelan & Ashworth (31(1), 7–39)", link:""},
+  {date:"2024", member:"Daniel Nyberg", type:"pub", title:"Corporations and climate change: an overview", journal:"WIREs Climate Change", coauthors:"with Wright (15(6))", link:""},
+  {date:"2024", member:"Muhammad Nadeem", type:"pub", title:"Social Trust, Environmental Violations, and Remedial Actions in China", journal:"Journal of Business Ethics", coauthors:"with Shahab, Ye & Liu (198(3), 105537)", link:""},
+  {date:"2024", member:"Muhammad Nadeem", type:"pub", title:"Board co-option and corporate environmental orientation: new insights from the waste management perspective", journal:"Corporate Governance: An International Review", coauthors:"with Gull & Luong (32(5), 758–785)", link:""},
+  {date:"2024", member:"Peter Clarkson", type:"pub", title:"Valuation implications of mandatory CSR expenditure in India", journal:"Abacus", coauthors:"", link:""},
+
+  // ===== 2023 publications (selected — pre-Hub but commonly cited foundations) =====
+  {date:"2023", member:"Saphira Rekker, Belinda Wade", type:"pub", title:"Evaluating fossil fuel companies' alignment with 1.5 °C climate pathways", journal:"Nature Climate Change", coauthors:"with Chen, Heede, Ives & Greig", link:""},
+
+  // ===== Reports (industry / policy / commissioned) =====
+  {date:"2025", member:"Kath Herbohn, Belinda Wade, Saphira Rekker, Michael Turner", type:"report", title:"Corporate Behaviour & Climate-related Financial Disclosures – Phase 1", venue:"Commissioned by AASB; The University of Queensland", coauthors:"with Ankit Jain", link:""},
+  {date:"2023", member:"Belinda Wade, Saphira Rekker", type:"report", title:"Australian Superannuation Funds — Climate management and disclosure: Technical report", venue:"Aurecon Australasia, Brisbane QLD", coauthors:"with Isaacs, Cook, Gleeson & Kniprath", link:""},
+  {date:"2023", member:"Belinda Wade", type:"report", title:"Treasury climate-related financial disclosure (second consultation round) — Aurecon submission", venue:"Aurecon, Bowen Hills QLD", coauthors:"with Gleeson", link:""},
+
+  // ===== Books / textbooks =====
+  {date:"2024", member:"Jacquie Humphrey, Saphira Rekker", type:"book", title:"Sustainable Finance (open educational textbook)", venue:"Open Educational Resources Collective (CC BY-NC 4.0)", coauthors:"with Gilbert, Henry & Scott", link:"https://oercollective.caul.edu.au/sustainable-finance/"},
+
+  // ===== Grants & funded projects =====
+  {date:"2024", member:"Saphira Rekker", type:"grant", title:"ARC DECRA: Corporate climate performance & science-based emissions reduction methodologies", detail:"Discovery Early Career Researcher Award, ~$400,000+ over 2024–2027. Building robust tools to measure, verify, and benchmark the credibility of corporate decarbonisation actions. (Project title — please refine to match the official ARC project description.)", link:""},
+  {date:"2024", member:"Kath Herbohn, Belinda Wade, Saphira Rekker, Michael Turner", type:"grant", title:"AASB-funded project: Corporate behaviour & climate-related financial disclosures", detail:"Multi-year project (2024–2027) investigating organisational behaviour and disclosure practices in response to mandatory climate-related reporting (with Ankit Jain).", link:""},
+
+  // ===== Leadership =====
+  // Leadership of research initiatives/platforms, editorial roles, prizes, fellowships,
+  // and other forms of academic recognition. Distinct from External Engagement
+  // (which is for sitting on bodies *outside* UQ).
+  {date:"2024", member:"Saphira Rekker", type:"leadership", title:"Lead, Carbon Budget Tracker", detail:"International collaborative research platform (UQ–Oxford–Princeton–LSE–Utrecht) assessing corporate and portfolio alignment with the Paris Agreement.", link:""},
+  {date:"2024", member:"Matthew Hornsey", type:"leadership", title:"Director, UQ Net Zero Observatory", detail:"Leading a multi-disciplinary group of academics and practitioners designing strategies to accelerate industry action and community support for rapid decarbonisation.", link:""},
+  {date:"2024", member:"Peter Clarkson", type:"leadership", title:"Editor, Contemporary Accounting Research", detail:"Also Associate Editor for Journal of Business Finance & Accounting, Journal of International Accounting Research, and Journal of Contemporary Accounting and Economics.", link:""},
+
+  // ===== External engagement (sitting on external bodies' panels / advisory roles) =====
+  // Use for ISO / SBTi / ASFI / GRI / IPCC / government advisory committees, etc.
+  // i.e. contributions to bodies *outside* UQ — not platforms/initiatives you lead.
+  {date:"2024", member:"Saphira Rekker", type:"engagement", title:"Australian delegate, ISO Net Zero standard", detail:"Contributing to international standard-setting on net-zero corporate transition.", link:""},
+  {date:"2023", member:"Saphira Rekker", type:"engagement", title:"Member, SBTi Scientific Advisory Group & Technical Working Group", detail:"Science Based Targets initiative — advisory role on corporate climate target methodologies.", link:""},
+  // PLACEHOLDER — please fill in your specific role/working group:
+  {date:"2024", member:"Saphira Rekker", type:"engagement", title:"Australian Sustainable Finance Institute (ASFI) — engagement role TBC", detail:"Please fill in working group / advisory role / consultation contributions.", link:""},
+
+  // ===== Media & impact =====
+  {date:"2024-12-11", member:"Ya-Yen Sun", type:"media", title:"UQ News: Tourism leads the pack in growing carbon emissions", detail:"International coverage of Nature Communications study (Phys.org, ScienceDaily, EurekAlert).", link:"https://news.uq.edu.au/2024-12-11-tourism-leads-pack-growing-carbon-emissions"},
+  {date:"2024", member:"Saphira Rekker, Belinda Wade", type:"media", title:"UQ Momentum: How businesses can avoid 'greenwishing'", detail:"Practical guide for credible net-zero plans.", link:"https://stories.uq.edu.au/momentum-magazine/2024/how-businesses-can-avoid-greenwishing/index.html"},
+  {date:"2024", member:"Natalie Peng", type:"media", title:"Superannuation greenwashing commentary", detail:"Quoted in CHOICE and PS News on the need for independent certification and stronger third-party scrutiny of 'sustainable' super products.", link:""},
+  {date:"2024", member:"Saphira Rekker", type:"media", title:"The Conversation contributor", detail:"Ongoing commentary on corporate climate alignment and Paris Agreement compliance.", link:"https://theconversation.com/profiles/saphira-rekker-489716"}
 ];
 
 function ds(d) { return d.toLowerCase().replace(/&/g,'').replace(/\s+/g,''); }
+
+// ---- Hub Activity helpers ----
+var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var TYPE_LABELS = {pub:'Publication', report:'Report', book:'Book', grant:'Grant', leadership:'Leadership', engagement:'External Engagement', media:'Media'};
+
+// fmtDate handles flexible precision: 'YYYY' -> '2024', 'YYYY-MM' -> 'Sep 2024', 'YYYY-MM-DD' -> 'Dec 11, 2024'
+function fmtDate(iso) {
+  if (!iso) return '';
+  var p = iso.split('-');
+  if (p.length === 1) return p[0];
+  if (p.length === 2) return MONTH_NAMES[parseInt(p[1],10)-1] + ' ' + p[0];
+  return MONTH_NAMES[parseInt(p[1],10)-1] + ' ' + parseInt(p[2],10) + ', ' + p[0];
+}
+// Sortable key — pads year-only/month-only dates so sorting still works.
+function dateKey(iso) {
+  if (!iso) return '0000-00-00';
+  var p = iso.split('-');
+  if (p.length === 1) return p[0] + '-06-30'; // year-only -> mid-year
+  if (p.length === 2) return iso + '-15';      // year-month -> mid-month
+  return iso;
+}
+function escapeHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function mkCard(r, isHDR) {
   var slug = ds(r.disc);
@@ -259,81 +779,407 @@ function mkCard(r, isHDR) {
   return h;
 }
 
-// Build grids
-var sHtml = ''; for (var i = 0; i < allStaff.length; i++) sHtml += mkCard(allStaff[i], false);
-var hHtml = ''; for (var i = 0; i < allHDR.length; i++) hHtml += mkCard(allHDR[i], true);
-document.getElementById('staff-grid').innerHTML = sHtml;
-document.getElementById('hdr-grid').innerHTML = hHtml;
+// ---- Build researcher cards into per-discipline grids ----
+// Map discipline name -> grid element id suffix (S&E becomes SE for valid HTML id)
+function gridIdSuffix(disc) { return disc === 'S&E' ? 'SE' : disc; }
 
-// Tab switching
-var currentTab = 'leadership';
+(function buildResearcherGrids() {
+  var staffByDisc = {};
+  var hdrByDisc = {};
+  for (var i = 0; i < allStaff.length; i++) {
+    var d = allStaff[i].disc || 'BIS';
+    (staffByDisc[d] = staffByDisc[d] || []).push(allStaff[i]);
+  }
+  for (var i = 0; i < allHDR.length; i++) {
+    var d = allHDR[i].disc || 'BIS';
+    (hdrByDisc[d] = hdrByDisc[d] || []).push(allHDR[i]);
+  }
+  var disciplines = ['Accounting','Finance','Management','Tourism','S&E','BIS'];
+  for (var k = 0; k < disciplines.length; k++) {
+    var d = disciplines[k];
+    var sId = 'grid-' + gridIdSuffix(d) + '-staff';
+    var hId = 'grid-' + gridIdSuffix(d) + '-hdr';
+    var sEl = document.getElementById(sId);
+    var hEl = document.getElementById(hId);
+    if (sEl) {
+      var sHtml = '';
+      var sList = staffByDisc[d] || [];
+      for (var i = 0; i < sList.length; i++) sHtml += mkCard(sList[i], false);
+      sEl.innerHTML = sHtml;
+    }
+    if (hEl) {
+      var hHtml = '';
+      var hList = hdrByDisc[d] || [];
+      for (var i = 0; i < hList.length; i++) hHtml += mkCard(hList[i], true);
+      hEl.innerHTML = hHtml;
+    }
+  }
+})();
+
+// ---- Researcher search across all accordions in the current view ----
+function applyResearcherSearch() {
+  var q = document.getElementById('main-search').value.toLowerCase().trim();
+  // Pick the active container based on current view
+  var container = (typeof currentView !== 'undefined' && currentView === 'topic')
+    ? document.getElementById('topic-container')
+    : document.getElementById('discipline-container');
+  if (!container) return;
+  var accordions = container.querySelectorAll('.acc-sub');
+  var totalVis = 0;
+  for (var i = 0; i < accordions.length; i++) {
+    var acc = accordions[i];
+    var cards = acc.querySelectorAll('.card');
+    var sectionVis = 0;
+    for (var j = 0; j < cards.length; j++) {
+      var c = cards[j];
+      var show = !q || c.getAttribute('data-search').indexOf(q) >= 0;
+      if (show) { c.className = c.className.replace(' is-hidden', ''); sectionVis++; }
+      else { if (c.className.indexOf('is-hidden') < 0) c.className += ' is-hidden'; }
+    }
+    totalVis += sectionVis;
+    if (q) {
+      acc.style.display = sectionVis === 0 ? 'none' : '';
+      if (sectionVis > 0) acc.open = true;
+    } else {
+      acc.style.display = '';
+    }
+  }
+  var nr = document.getElementById('no-results');
+  if (totalVis === 0 && q) { nr.className = nr.className.replace(' is-hidden', ''); }
+  else { if (nr.className.indexOf('is-hidden') < 0) nr.className += ' is-hidden'; }
+}
+
+document.getElementById('main-search').addEventListener('input', applyResearcherSearch);
+
+// ---- Topic view (build accordions grouped by topic) ----
+function buildTopicAccordions() {
+  var byTopic = {};
+  var unTagged = [];
+  // Initialize each topic with empty buckets
+  for (var t = 0; t < TOPICS.length; t++) byTopic[TOPICS[t]] = { staff:[], hdr:[] };
+  function bucket(person, isHDR) {
+    var topics = person.topics || [];
+    if (topics.length === 0) { unTagged.push({person:person, isHDR:isHDR}); return; }
+    for (var i = 0; i < topics.length; i++) {
+      if (byTopic[topics[i]]) byTopic[topics[i]][isHDR?'hdr':'staff'].push(person);
+    }
+  }
+  for (var i = 0; i < allStaff.length; i++) bucket(allStaff[i], false);
+  for (var i = 0; i < allHDR.length; i++) bucket(allHDR[i], true);
+
+  var h = '';
+  for (var t = 0; t < TOPICS.length; t++) {
+    var topic = TOPICS[t];
+    var staffList = byTopic[topic].staff;
+    var hdrList = byTopic[topic].hdr;
+    var count = staffList.length + hdrList.length;
+    var countLabel = staffList.length + ' staff' + (hdrList.length ? ' &middot; ' + hdrList.length + ' HDR' : '');
+    h += '<details class="acc-sub" data-topic="' + escapeHtml(topic) + '">';
+    h += '<summary><span class="topic-tag">' + escapeHtml(topic) + '</span> <span class="count">' + countLabel + '</span></summary>';
+    h += '<div class="acc-body">';
+    if (staffList.length) {
+      h += '<div class="grid">';
+      for (var i = 0; i < staffList.length; i++) h += mkCard(staffList[i], false);
+      h += '</div>';
+    }
+    if (hdrList.length) {
+      h += '<div class="sec-head" style="margin-top:1rem; font-size:0.85rem;">HDR Candidates</div>';
+      h += '<div class="grid">';
+      for (var i = 0; i < hdrList.length; i++) h += mkCard(hdrList[i], true);
+      h += '</div>';
+    }
+    h += '</div></details>';
+  }
+  if (unTagged.length) {
+    h += '<details class="acc-sub" data-topic="untagged"><summary><span class="topic-tag" style="background:#999">Untagged</span> <span class="count">' + unTagged.length + '</span></summary><div class="acc-body"><div class="grid">';
+    for (var i = 0; i < unTagged.length; i++) h += mkCard(unTagged[i].person, unTagged[i].isHDR);
+    h += '</div></div></details>';
+  }
+  document.getElementById('topic-container').innerHTML = h;
+}
+buildTopicAccordions();
+
+// View toggle (Discipline | Topic) within Researchers
+var currentView = 'discipline';
+var vtBtns = document.querySelectorAll('.vt-btn');
+function switchView(view) {
+  currentView = view;
+  for (var i = 0; i < vtBtns.length; i++) {
+    vtBtns[i].className = vtBtns[i].className.replace(' active','');
+    if (vtBtns[i].getAttribute('data-view') === view) vtBtns[i].className += ' active';
+  }
+  var disc = document.getElementById('discipline-container');
+  var topic = document.getElementById('topic-container');
+  if (view === 'topic') {
+    disc.className = (disc.className + ' is-hidden').trim();
+    topic.className = topic.className.replace(' is-hidden','').replace('is-hidden','').trim();
+  } else {
+    disc.className = disc.className.replace(' is-hidden','').replace('is-hidden','').trim();
+    topic.className = (topic.className + ' is-hidden').trim();
+  }
+  applyResearcherSearch();
+}
+for (var i = 0; i < vtBtns.length; i++) {
+  vtBtns[i].addEventListener('click', function() { switchView(this.getAttribute('data-view')); });
+}
+
+// ---- Top tab switching ----
 var tabBtns = document.querySelectorAll('.tab-btn');
-
 function switchTab(tab) {
-  currentTab = tab;
-  // Highlight active button
   for (var i = 0; i < tabBtns.length; i++) {
     tabBtns[i].className = tabBtns[i].className.replace(' active', '');
     if (tabBtns[i].getAttribute('data-tab') === tab) tabBtns[i].className += ' active';
   }
-  // Show correct panel
   var panels = document.querySelectorAll('.panel');
   for (var i = 0; i < panels.length; i++) panels[i].className = panels[i].className.replace(' active', '');
-
-  if (tab === 'leadership') {
-    document.getElementById('panel-leadership').className += ' active';
-  } else if (tab === 'overview') {
-    document.getElementById('panel-overview').className += ' active';
-  } else {
-    document.getElementById('panel-researchers').className += ' active';
-    applyFilter(tab);
-  }
+  var target = document.getElementById('panel-' + tab);
+  if (target) target.className += ' active';
 }
-
-function applyFilter(tab) {
-  var q = document.getElementById('main-search').value.toLowerCase();
-  var discFilter = (tab === 'all') ? null : tab;
-
-  var staffCards = document.querySelectorAll('#staff-grid .card');
-  var hdrCards = document.querySelectorAll('#hdr-grid .card');
-  var staffVis = 0, hdrVis = 0;
-
-  function filterCards(cards) {
-    var vis = 0;
-    for (var i = 0; i < cards.length; i++) {
-      var c = cards[i];
-      var show = true;
-      if (discFilter) show = c.getAttribute('data-disc') === discFilter;
-      if (show && q) show = c.getAttribute('data-search').indexOf(q) >= 0;
-      if (show) { c.className = c.className.replace(' is-hidden', ''); vis++; }
-      else { if (c.className.indexOf('is-hidden') < 0) c.className += ' is-hidden'; }
-    }
-    return vis;
-  }
-
-  staffVis = filterCards(staffCards);
-  hdrVis = filterCards(hdrCards);
-
-  // Toggle section headers
-  var sh = document.getElementById('staff-head');
-  var hh = document.getElementById('hdr-head');
-  if (staffVis === 0) { if (sh.className.indexOf('is-hidden') < 0) sh.className += ' is-hidden'; }
-  else { sh.className = sh.className.replace(' is-hidden', ''); }
-  if (hdrVis === 0) { if (hh.className.indexOf('is-hidden') < 0) hh.className += ' is-hidden'; }
-  else { hh.className = hh.className.replace(' is-hidden', ''); }
-
-  var nr = document.getElementById('no-results');
-  if (staffVis + hdrVis === 0) { nr.className = nr.className.replace(' is-hidden', ''); }
-  else { if (nr.className.indexOf('is-hidden') < 0) nr.className += ' is-hidden'; }
-}
-
 for (var i = 0; i < tabBtns.length; i++) {
   tabBtns[i].addEventListener('click', function() { switchTab(this.getAttribute('data-tab')); });
 }
 
-document.getElementById('main-search').addEventListener('input', function() {
-  if (currentTab !== 'leadership' && currentTab !== 'overview') applyFilter(currentTab);
-});
+// ---- Hub Activity rendering ----
+
+// Sort helpers (newest first) — use dateKey so flexible-precision dates sort correctly
+function byDateDesc(a, b) {
+  var ka = dateKey(a.date), kb = dateKey(b.date);
+  return ka < kb ? 1 : (ka > kb ? -1 : 0);
+}
+
+// Render Meetings
+function renderMeetings() {
+  var sorted = allMeetings.slice().sort(byDateDesc);
+  var listEl = document.getElementById('meeting-list');
+  var emptyEl = document.getElementById('meeting-empty');
+  if (sorted.length === 0) {
+    listEl.innerHTML = '';
+    emptyEl.className = emptyEl.className.replace(' is-hidden','');
+    return;
+  }
+  emptyEl.className.indexOf('is-hidden') < 0 && (emptyEl.className += ' is-hidden');
+  var h = '';
+  for (var i = 0; i < sorted.length; i++) {
+    var m = sorted[i];
+    h += '<div class="meeting-row">';
+    h += '<div class="m-main">';
+    h += '<div class="m-date">' + fmtDate(m.date) + '</div>';
+    h += '<div class="m-title">' + escapeHtml(m.title) + '</div>';
+    if (m.attendees) h += '<div class="m-meta"><strong>Attendees:</strong> ' + escapeHtml(m.attendees) + '</div>';
+    if (m.notes) h += '<div class="m-meta" style="margin-top:0.3rem;">' + escapeHtml(m.notes) + '</div>';
+    h += '</div>';
+    h += '<div class="m-actions">';
+    if (m.minutes) h += '<a href="' + m.minutes + '" target="_blank" rel="noopener">Minutes</a>';
+    else h += '<span style="font-size:0.78rem; color:#999; font-style:italic;">No minutes linked</span>';
+    h += '</div>';
+    h += '</div>';
+  }
+  listEl.innerHTML = h;
+}
+
+// Render Activities
+function renderActivities() {
+  var sorted = allActivities.slice().sort(byDateDesc);
+  var gridEl = document.getElementById('activity-grid');
+  var emptyEl = document.getElementById('activity-empty');
+  if (sorted.length === 0) {
+    gridEl.innerHTML = '';
+    emptyEl.className = emptyEl.className.replace(' is-hidden','');
+    return;
+  }
+  var h = '';
+  for (var i = 0; i < sorted.length; i++) {
+    var a = sorted[i];
+    h += '<div class="activity-card">';
+    h += '<div class="a-date">' + fmtDate(a.date) + '</div>';
+    h += '<div class="a-title">' + escapeHtml(a.title) + '</div>';
+    h += '<div class="a-type">' + escapeHtml(a.type) + '</div>';
+    h += '<div class="a-desc">' + escapeHtml(a.desc) + '</div>';
+    h += '</div>';
+  }
+  gridEl.innerHTML = h;
+}
+
+// Achievement filter state
+var achFilter = { type: 'all', year: 'all', month: 'all', member: 'all' };
+
+// Build the member dropdown from the directory (alphabetical, includes both staff and HDR)
+(function buildMemberFilter() {
+  var sel = document.getElementById('filter-member');
+  if (!sel) return;
+  var names = [];
+  for (var i = 0; i < allStaff.length; i++) names.push(allStaff[i].name);
+  for (var i = 0; i < allHDR.length; i++) names.push(allHDR[i].name);
+  names.sort(function(a, b) { return a.localeCompare(b); });
+  for (var i = 0; i < names.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = names[i];
+    opt.textContent = names[i];
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', function() {
+    achFilter.member = sel.value;
+    renderAchievements();
+  });
+})();
+
+function journalBadgesHtml(journalName) {
+  var meta = journalMeta[journalName];
+  if (!meta) return '';
+  var parts = [];
+  if (meta.q) {
+    var qClass = 'j-' + meta.q.toLowerCase();
+    parts.push('<span class="j-badge ' + qClass + '" title="Scimago quartile">' + escapeHtml(meta.q) + '</span>');
+  }
+  if (meta.if_) parts.push('<span class="j-badge j-if" title="JCR Impact Factor">IF ' + escapeHtml(meta.if_) + '</span>');
+  if (meta.abdc) {
+    var abdcClass = 'j-abdc-' + (meta.abdc === 'A*' ? 'Astar' : meta.abdc);
+    parts.push('<span class="j-badge ' + abdcClass + '" title="ABDC rating">ABDC ' + escapeHtml(meta.abdc) + '</span>');
+  }
+  return parts.length ? '<span class="j-badges">' + parts.join('') + '</span>' : '';
+}
+
+function passesAchFilter(a) {
+  var p = a.date.split('-');
+  var year = p[0];
+  var hasMonth = p.length >= 2;
+  var month = hasMonth ? parseInt(p[1], 10) : null;
+  if (achFilter.type !== 'all' && a.type !== achFilter.type) return false;
+  if (achFilter.year !== 'all' && year !== achFilter.year) return false;
+  if (achFilter.month !== 'all' && hasMonth && month !== parseInt(achFilter.month, 10)) return false;
+  if (achFilter.member !== 'all') {
+    // a.member is a comma-separated string of names. Split and exact-match
+    // each so we don't get false positives from substring overlaps.
+    var memberList = (a.member || '').split(',').map(function(s) { return s.trim(); });
+    if (memberList.indexOf(achFilter.member) < 0) return false;
+  }
+  return true;
+}
+
+function renderAchStats(visibleEntries) {
+  var counts = {pub:0, report:0, book:0, grant:0, leadership:0, engagement:0, media:0};
+  var ifSum = 0, ifCount = 0, q1Count = 0;
+  var minYear = null, maxYear = null;
+  for (var i = 0; i < visibleEntries.length; i++) {
+    var a = visibleEntries[i];
+    if (counts[a.type] !== undefined) counts[a.type]++;
+    if (a.type === 'pub' && a.journal && journalMeta[a.journal]) {
+      var meta = journalMeta[a.journal];
+      if (meta.if_) { var ifNum = parseFloat(meta.if_); if (!isNaN(ifNum)) { ifSum += ifNum; ifCount++; } }
+      if (meta.q === 'Q1') q1Count++;
+    }
+    var y = parseInt(a.date.split('-')[0], 10);
+    if (!isNaN(y)) {
+      if (minYear === null || y < minYear) minYear = y;
+      if (maxYear === null || y > maxYear) maxYear = y;
+    }
+  }
+  // Build a context-aware total label based on active filter and year span
+  var totalLabel = 'Total';
+  if (visibleEntries.length > 0) {
+    var memberPart = (achFilter.member !== 'all')
+      ? (achFilter.member.split(' ')[0]) // first name keeps the pill compact
+      : '';
+    var yearPart = '';
+    if (achFilter.year !== 'all') {
+      yearPart = 'in ' + achFilter.year;
+    } else if (minYear !== null && maxYear !== null) {
+      yearPart = (minYear === maxYear) ? ('in ' + minYear) : ('since ' + minYear);
+    }
+    if (memberPart && yearPart) totalLabel = memberPart + ' ' + yearPart;
+    else if (memberPart) totalLabel = 'by ' + memberPart;
+    else if (yearPart) totalLabel = yearPart;
+  }
+  var avgIf = ifCount > 0 ? (ifSum / ifCount).toFixed(1) : '—';
+  var pills = [];
+  pills.push({cls:'s-total', num:visibleEntries.length, label:totalLabel});
+  pills.push({cls:'s-pub', num:counts.pub, label:'Publications'});
+  pills.push({cls:'s-q1', num:q1Count, label:'Q1 Pubs'});
+  pills.push({cls:'s-if', num:avgIf, label:'Avg IF'});
+  pills.push({cls:'s-grant', num:counts.grant, label:'Grants'});
+  pills.push({cls:'s-leadership', num:counts.leadership, label:'Leadership'});
+  pills.push({cls:'s-engagement', num:counts.engagement, label:'Engagement'});
+  pills.push({cls:'s-report', num:counts.report, label:'Reports'});
+  pills.push({cls:'s-media', num:counts.media, label:'Media'});
+  var h = '';
+  for (var j = 0; j < pills.length; j++) {
+    var p = pills[j];
+    h += '<div class="ach-stat ' + p.cls + '"><div class="num">' + p.num + '</div><div class="label">' + p.label + '</div></div>';
+  }
+  document.getElementById('ach-stats').innerHTML = h;
+}
+
+function renderAchievements() {
+  var sorted = allAchievements.slice().sort(byDateDesc);
+  var tlEl = document.getElementById('achievement-timeline');
+  var emptyEl = document.getElementById('achievement-empty');
+  var h = '';
+  var visCount = 0;
+  var visibleEntries = [];
+  for (var i = 0; i < sorted.length; i++) {
+    var a = sorted[i];
+    if (!passesAchFilter(a)) continue;
+    visibleEntries.push(a);
+    visCount++;
+    h += '<div class="timeline-item type-' + a.type + '">';
+    h += '<div class="t-head">';
+    h += '<div><span class="t-type-tag type-' + a.type + '">' + TYPE_LABELS[a.type] + '</span> <span class="t-date">' + fmtDate(a.date) + '</span></div>';
+    h += '</div>';
+    h += '<div class="t-member">' + escapeHtml(a.member) + '</div>';
+    h += '<div style="font-size:0.92rem; font-weight:500; margin-top:0.15rem;">' + escapeHtml(a.title) + '</div>';
+
+    // Type-specific venue line
+    if (a.type === 'pub' && a.journal) {
+      h += '<div class="t-venue">' + escapeHtml(a.journal) + journalBadgesHtml(a.journal) + '</div>';
+    } else if ((a.type === 'report' || a.type === 'book') && a.venue) {
+      h += '<div class="t-venue">' + escapeHtml(a.venue) + '</div>';
+    }
+    if (a.coauthors) h += '<div class="t-coauth">' + escapeHtml(a.coauthors) + '</div>';
+    if (a.detail) h += '<div class="t-detail">' + escapeHtml(a.detail) + '</div>';
+    if (a.link) h += '<a class="t-link" href="' + a.link + '" target="_blank" rel="noopener">View &rarr;</a>';
+    h += '</div>';
+  }
+  tlEl.innerHTML = h;
+  if (visCount === 0) emptyEl.className = emptyEl.className.replace(' is-hidden','');
+  else if (emptyEl.className.indexOf('is-hidden') < 0) emptyEl.className += ' is-hidden';
+  renderAchStats(visibleEntries);
+}
+
+// Filter chip clicks
+var chips = document.querySelectorAll('.filter-bar .chip');
+for (var i = 0; i < chips.length; i++) {
+  chips[i].addEventListener('click', function() {
+    var dim = this.getAttribute('data-filter');
+    var val = this.getAttribute('data-val');
+    achFilter[dim] = val;
+    // toggle active class within the same row
+    var siblings = this.parentNode.querySelectorAll('.chip[data-filter="' + dim + '"]');
+    for (var j = 0; j < siblings.length; j++) siblings[j].className = siblings[j].className.replace(' active','');
+    this.className += ' active';
+    renderAchievements();
+  });
+}
+
+// Update header counts on the accordion section headers
+function updateSectionCounts() {
+  var rc = document.getElementById('researcher-count');
+  if (rc) rc.textContent = (allStaff.length + allHDR.length);
+  var ac = document.getElementById('ach-total-count');
+  if (ac) ac.textContent = allAchievements.length;
+  var mc = document.getElementById('meet-count');
+  if (mc) mc.textContent = allMeetings.length;
+  var ec = document.getElementById('act-count');
+  if (ec) ec.textContent = allActivities.length;
+}
+
+// Initial render
+renderMeetings();
+renderActivities();
+renderAchievements();
+updateSectionCounts();
+
+// Apply unlock state on initial load (after all DOM is wired up)
+applyUnlockState();
 </script>
 </body>
 </html>
