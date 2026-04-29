@@ -92,7 +92,8 @@ header p { font-size:0.95rem; opacity:0.9; max-width:700px; }
 .disc-tag.tourism { background: var(--accent-tourism); }
 .disc-tag.bis { background: var(--accent-bis); }
 .disc-tag.se { background: var(--accent-se); }
-.topic-tag { display:inline-block; font-size:0.78rem; padding:0.15rem 0.6rem; border-radius:4px; color:#fff; font-weight:500; background: var(--uq-purple); }
+.topic-tag { display:inline-block; font-size:0.85rem; padding:0.18rem 0.7rem; border-radius:4px; color:#fff; font-weight:600; background: var(--uq-purple); }
+.topic-desc { font-size:0.82rem; color:var(--text-light); font-style:italic; margin-bottom:0.7rem; padding-bottom:0.4rem; border-bottom:1px dashed var(--border); }
 
 /* Section heads */
 .sec-head { font-size:0.95rem; font-weight:600; color: var(--uq-purple); margin:1.2rem 0 0.7rem; padding-bottom:0.3rem; border-bottom:2px solid var(--uq-gold); }
@@ -321,18 +322,18 @@ footer a { color:var(--uq-purple); }
   <div>
     <div class="view-toggle">
       <span class="vt-label">View by:</span>
-      <button class="vt-btn active" data-view="discipline">Discipline</button>
-      <button class="vt-btn" data-view="topic">Topic</button>
+      <button class="vt-btn active" data-view="topic">Topic</button>
+      <button class="vt-btn" data-view="discipline">Discipline</button>
     </div>
     <div class="search-wrap">
       <input type="text" class="search-box" id="main-search" placeholder="Search by name or research focus...">
     </div>
 
-    <!-- Topic view (initially hidden, populated by JS) -->
-    <div id="topic-container" class="is-hidden"></div>
+    <!-- Topic view (default; populated by JS) -->
+    <div id="topic-container"></div>
 
-    <!-- Discipline view -->
-    <div id="discipline-container">
+    <!-- Discipline view (initially hidden) -->
+    <div id="discipline-container" class="is-hidden">
 
     <details class="acc-sub" data-disc="Accounting">
       <summary><span class="disc-tag accounting">Accounting</span> <span class="count">13 staff &middot; 4 HDR</span></summary>
@@ -531,63 +532,69 @@ function logout() {
 }
 window.addEventListener('hashchange', applyUnlockState);
 
-// TOPICS: a researcher can carry 1–3 topic tags. Used for the Topic view.
-// To rename or split a topic, edit this list AND each researcher's `topics` array.
+// TOPICS — five flat themes covering the hub's research areas.
+// Each researcher carries 1–3 of these. To split or rename, edit
+// this list AND each researcher's `topics` array.
 var TOPICS = [
-  "Climate Finance & Investment",
-  "Sustainability Accounting & Disclosure",
+  "Climate Change",
+  "Sustainability Disclosure & ESG",
+  "Sustainable Finance",
   "Sustainable Tourism",
-  "Decarbonisation & Climate Transitions",
-  "Climate Risk & Adaptation",
-  "Greenwashing & ESG",
-  "Corporate Governance",
-  "Climate Communication & Psychology",
-  "Responsible Leadership",
-  "Information Systems for Sustainability"
+  "Responsible Business & Governance"
 ];
 
+// Optional one-line description shown on each accordion (helps members
+// understand what falls under each theme).
+var TOPIC_DESCRIPTIONS = {
+  "Climate Change": "Mitigation, adaptation, decarbonisation, climate risk, corporate climate action, climate communication & scepticism",
+  "Sustainability Disclosure & ESG": "Sustainability accounting, ESG reporting & investing, audit & assurance, greenwashing",
+  "Sustainable Finance": "Climate finance, responsible investment, Paris alignment, green innovation",
+  "Sustainable Tourism": "Tourism carbon, sustainable hospitality, tourist behaviour change",
+  "Responsible Business & Governance": "Corporate governance, leadership, ethics, organisational behaviour, IS for sustainability, modern slavery & social sustainability"
+};
+
 var allStaff = [
-  {name:"Kathleen Herbohn",pos:"Professor",disc:"Accounting",focus:"Corporate social responsibility, environmental reporting, sustainability accounting, climate change disclosure",role:"Hub Co-Lead",topics:["Sustainability Accounting & Disclosure","Greenwashing & ESG"],uq:"https://researchers.uq.edu.au/researcher/975",gs:"https://scholar.google.com/citations?user=eqAxVwEAAAAJ",em:"k.herbohn@uq.edu.au"},
-  {name:"Muhammad Nadeem",pos:"Associate Professor",disc:"Accounting",focus:"Sustainability accounting, corporate governance, financial disclosure, CSR",role:"",topics:["Sustainability Accounting & Disclosure","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/38347",gs:"https://scholar.google.com/citations?user=XFJ46cEAAAAJ",em:""},
-  {name:"Saphira Rekker",pos:"Senior Research Fellow",disc:"Finance",focus:"Corporate climate performance measurement, Paris Agreement alignment, carbon budget assessment",role:"Internal Engagement Lead",topics:["Climate Finance & Investment","Decarbonisation & Climate Transitions"],uq:"https://researchers.uq.edu.au/researcher/21972",gs:"https://scholar.google.com/citations?user=uXFwaTcAAAAJ",em:"s.rekker@uq.edu.au"},
-  {name:"Neal Ashkanasy",pos:"Emeritus Professor",disc:"Management",focus:"Emotions in the workplace, organisational behaviour, leadership and ethics",role:"",topics:["Responsible Leadership"],uq:"",gs:"https://scholar.google.com/citations?user=Q_Rb3rgAAAAJ",em:""},
-  {name:"Peter Clarkson",pos:"Professor",disc:"Accounting",focus:"Voluntary disclosure, firm valuation, environmental performance accounting",role:"",topics:["Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/184",gs:"https://scholar.google.com/citations?user=6fllVQQAAAAJ",em:""},
+  {name:"Kathleen Herbohn",pos:"Professor",disc:"Accounting",focus:"Corporate social responsibility, environmental reporting, sustainability accounting, climate change disclosure",role:"Hub Co-Lead",topics:["Climate Change","Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/975",gs:"https://scholar.google.com/citations?user=eqAxVwEAAAAJ",em:"k.herbohn@uq.edu.au"},
+  {name:"Muhammad Nadeem",pos:"Associate Professor",disc:"Accounting",focus:"Sustainability accounting, corporate governance, financial disclosure, CSR",role:"",topics:["Sustainability Disclosure & ESG","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/38347",gs:"https://scholar.google.com/citations?user=XFJ46cEAAAAJ",em:""},
+  {name:"Saphira Rekker",pos:"Senior Research Fellow",disc:"Finance",focus:"Corporate climate performance measurement, Paris Agreement alignment, carbon budget assessment",role:"Internal Engagement Lead",topics:["Climate Change","Sustainable Finance","Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/21972",gs:"https://scholar.google.com/citations?user=uXFwaTcAAAAJ",em:"s.rekker@uq.edu.au"},
+  {name:"Neal Ashkanasy",pos:"Emeritus Professor",disc:"Management",focus:"Emotions in the workplace, organisational behaviour, leadership and ethics",role:"",topics:["Responsible Business & Governance"],uq:"",gs:"https://scholar.google.com/citations?user=Q_Rb3rgAAAAJ",em:""},
+  {name:"Peter Clarkson",pos:"Professor",disc:"Accounting",focus:"Voluntary disclosure, firm valuation, environmental performance accounting",role:"",topics:["Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/184",gs:"https://scholar.google.com/citations?user=6fllVQQAAAAJ",em:""},
   {name:"Sara Dolnicar",pos:"Professor",disc:"Tourism",focus:"Market segmentation, sustainable tourism, environmental sustainability in hospitality",role:"",topics:["Sustainable Tourism"],uq:"https://researchers.uq.edu.au/researcher/2996",gs:"https://scholar.google.com/citations?user=e74qj60AAAAJ",em:""},
-  {name:"Matthew Hornsey",pos:"Professor",disc:"Management",focus:"Climate scepticism, misinformation, strategies to accelerate decarbonisation support",role:"",topics:["Climate Communication & Psychology","Decarbonisation & Climate Transitions"],uq:"https://researchers.uq.edu.au/researcher/375",gs:"https://scholar.google.com/citations?user=TDA9gz4AAAAJ",em:""},
-  {name:"Daniel Nyberg",pos:"Professor",disc:"S&E",focus:"Climate change politics, corporate capitalism, sustainability and democracy",role:"",topics:["Decarbonisation & Climate Transitions","Climate Communication & Psychology"],uq:"https://researchers.uq.edu.au/researcher/39152",gs:"https://scholar.google.com/citations?user=UmA9busAAAAJ",em:""},
-  {name:"Nicola Pless",pos:"Honorary Professor",disc:"Management",focus:"Responsible leadership, business ethics, ESG, organisational sustainability",role:"",topics:["Responsible Leadership","Greenwashing & ESG"],uq:"",gs:"https://scholar.google.com/citations?user=wZvZAccAAAAJ",em:""},
-  {name:"Belinda Wade",pos:"Professor",disc:"S&E",focus:"Organisational decarbonisation, climate transitions, sustainability reporting",role:"",topics:["Decarbonisation & Climate Transitions","Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/18470",gs:"https://scholar.google.com/citations?user=YRvhhbsAAAAJ",em:""},
-  {name:"Jacquie Humphrey",pos:"Associate Professor",disc:"Finance",focus:"Sustainable finance, responsible investment, climate equity, ESG",role:"",topics:["Climate Finance & Investment","Greenwashing & ESG"],uq:"https://researchers.uq.edu.au/researcher/6143",gs:"https://scholar.google.com.au/citations?user=XtlzitQAAAAJ",em:""},
-  {name:"Bobae Choi",pos:"Associate Professor",disc:"Accounting",focus:"Carbon accounting and reporting, corporate governance, ESG",role:"",topics:["Sustainability Accounting & Disclosure","Corporate Governance","Greenwashing & ESG"],uq:"",gs:"https://scholar.google.com/citations?user=nTVFOnQAAAAJ",em:""},
-  {name:"Ya-Yen Sun",pos:"Associate Professor",disc:"Tourism",focus:"Tourism carbon footprinting, UN SDG 12 and 13, sustainable tourism decarbonisation",role:"",topics:["Sustainable Tourism","Decarbonisation & Climate Transitions"],uq:"https://researchers.uq.edu.au/researcher/21340",gs:"https://scholar.google.com/citations?user=YfAyc-cAAAAJ",em:""},
-  {name:"Hasibul Chowdhury",pos:"Senior Lecturer",disc:"Finance",focus:"Corporate policies around climate change adaptation, corporate finance",role:"",topics:["Climate Risk & Adaptation","Climate Finance & Investment"],uq:"https://researchers.uq.edu.au/researcher/23627",gs:"https://scholar.google.com/citations?user=h59AJ2EAAAAJ",em:""},
-  {name:"Lin Mi",pos:"Senior Lecturer",disc:"Finance",focus:"Climate risk and payout flexibility, corporate finance, real estate finance",role:"",topics:["Climate Risk & Adaptation","Climate Finance & Investment"],uq:"https://researchers.uq.edu.au/researcher/2164",gs:"https://scholar.google.com/citations?user=vtBDL6wAAAAJ",em:""},
-  {name:"Lily Nguyen",pos:"Senior Lecturer",disc:"Finance",focus:"Climate finance, green innovation, corporate governance",role:"",topics:["Climate Finance & Investment","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/23730",gs:"https://scholar.google.com/citations?user=9XuG6-8AAAAJ",em:""},
-  {name:"Suman Neupane-Joshi",pos:"Senior Lecturer",disc:"Finance",focus:"Environmental sustainability and finance, investor behaviour, emerging markets",role:"",topics:["Climate Finance & Investment"],uq:"https://researchers.uq.edu.au/researcher/20107",gs:"https://scholar.google.com/citations?user=zLHjnbgAAAAJ",em:""},
-  {name:"Michael Turner",pos:"Senior Lecturer",disc:"Accounting",focus:"ESG disclosure, management accounting, corporate governance",role:"",topics:["Sustainability Accounting & Disclosure","Greenwashing & ESG","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/2160",gs:"https://scholar.google.com/citations?user=JuPDEVEAAAAJ",em:""},
-  {name:"Peter Do",pos:"Senior Lecturer",disc:"Accounting",focus:"Climate-related financial reporting, sustainability disclosure, peer effects",role:"",topics:["Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/20954",gs:"https://scholar.google.com/citations?user=9niWzp4AAAAJ",em:""},
-  {name:"Csilla Demeter",pos:"Research Fellow",disc:"S&E",focus:"How corporations respond to climate change, energy transitions, strategy",role:"",topics:["Decarbonisation & Climate Transitions"],uq:"https://about.uq.edu.au/experts/45783",gs:"https://scholar.google.com/citations?user=qjdhIQIAAAAJ",em:""},
+  {name:"Matthew Hornsey",pos:"Professor",disc:"Management",focus:"Climate scepticism, misinformation, strategies to accelerate decarbonisation support",role:"",topics:["Climate Change","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/375",gs:"https://scholar.google.com/citations?user=TDA9gz4AAAAJ",em:""},
+  {name:"Daniel Nyberg",pos:"Professor",disc:"S&E",focus:"Climate change politics, corporate capitalism, sustainability and democracy",role:"",topics:["Climate Change","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/39152",gs:"https://scholar.google.com/citations?user=UmA9busAAAAJ",em:""},
+  {name:"Nicola Pless",pos:"Honorary Professor",disc:"Management",focus:"Responsible leadership, business ethics, ESG, organisational sustainability",role:"",topics:["Responsible Business & Governance","Sustainability Disclosure & ESG"],uq:"",gs:"https://scholar.google.com/citations?user=wZvZAccAAAAJ",em:""},
+  {name:"Belinda Wade",pos:"Professor",disc:"S&E",focus:"Organisational decarbonisation, climate transitions, sustainability reporting",role:"",topics:["Climate Change","Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/18470",gs:"https://scholar.google.com/citations?user=YRvhhbsAAAAJ",em:""},
+  {name:"Jacquie Humphrey",pos:"Associate Professor",disc:"Finance",focus:"Sustainable finance, responsible investment, climate equity, ESG",role:"",topics:["Sustainable Finance","Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/6143",gs:"https://scholar.google.com.au/citations?user=XtlzitQAAAAJ",em:""},
+  {name:"Bobae Choi",pos:"Associate Professor",disc:"Accounting",focus:"Carbon accounting and reporting, corporate governance, ESG",role:"",topics:["Sustainability Disclosure & ESG","Climate Change","Responsible Business & Governance"],uq:"",gs:"https://scholar.google.com/citations?user=nTVFOnQAAAAJ",em:""},
+  {name:"Ya-Yen Sun",pos:"Associate Professor",disc:"Tourism",focus:"Tourism carbon footprinting, UN SDG 12 and 13, sustainable tourism decarbonisation",role:"",topics:["Sustainable Tourism","Climate Change"],uq:"https://researchers.uq.edu.au/researcher/21340",gs:"https://scholar.google.com/citations?user=YfAyc-cAAAAJ",em:""},
+  {name:"Hasibul Chowdhury",pos:"Senior Lecturer",disc:"Finance",focus:"Corporate policies around climate change adaptation, corporate finance",role:"",topics:["Climate Change","Sustainable Finance"],uq:"https://researchers.uq.edu.au/researcher/23627",gs:"https://scholar.google.com/citations?user=h59AJ2EAAAAJ",em:""},
+  {name:"Lin Mi",pos:"Senior Lecturer",disc:"Finance",focus:"Climate risk and payout flexibility, corporate finance, real estate finance",role:"",topics:["Climate Change","Sustainable Finance"],uq:"https://researchers.uq.edu.au/researcher/2164",gs:"https://scholar.google.com/citations?user=vtBDL6wAAAAJ",em:""},
+  {name:"Lily Nguyen",pos:"Senior Lecturer",disc:"Finance",focus:"Climate finance, green innovation, corporate governance",role:"",topics:["Sustainable Finance","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/23730",gs:"https://scholar.google.com/citations?user=9XuG6-8AAAAJ",em:""},
+  {name:"Suman Neupane-Joshi",pos:"Senior Lecturer",disc:"Finance",focus:"Environmental sustainability and finance, investor behaviour, emerging markets",role:"",topics:["Sustainable Finance"],uq:"https://researchers.uq.edu.au/researcher/20107",gs:"https://scholar.google.com/citations?user=zLHjnbgAAAAJ",em:""},
+  {name:"Michael Turner",pos:"Senior Lecturer",disc:"Accounting",focus:"ESG disclosure, management accounting, corporate governance",role:"",topics:["Sustainability Disclosure & ESG","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/2160",gs:"https://scholar.google.com/citations?user=JuPDEVEAAAAJ",em:""},
+  {name:"Peter Do",pos:"Senior Lecturer",disc:"Accounting",focus:"Climate-related financial reporting, sustainability disclosure, peer effects",role:"",topics:["Sustainability Disclosure & ESG","Climate Change"],uq:"https://researchers.uq.edu.au/researcher/20954",gs:"https://scholar.google.com/citations?user=9niWzp4AAAAJ",em:""},
+  {name:"Csilla Demeter",pos:"Research Fellow",disc:"S&E",focus:"How corporations respond to climate change, energy transitions, strategy",role:"",topics:["Climate Change"],uq:"https://about.uq.edu.au/experts/45783",gs:"https://scholar.google.com/citations?user=qjdhIQIAAAAJ",em:""},
   {name:"Noreen Breakey",pos:"Lecturer",disc:"Tourism",focus:"Sustainable tourism management, community-based tourism, hospitality education",role:"",topics:["Sustainable Tourism"],uq:"https://researchers.uq.edu.au/researcher/1038",gs:"",em:""},
-  {name:"Mireia Guix",pos:"Lecturer",disc:"Tourism",focus:"Sustainability in tourism, carbon offsetting, climate adaptation, modern slavery in supply chains",role:"",topics:["Sustainable Tourism","Climate Risk & Adaptation"],uq:"https://researchers.uq.edu.au/researcher/34288",gs:"",em:""},
-  {name:"Byungki Kim",pos:"Lecturer",disc:"Accounting",focus:"ESG issues in accounting, financial reporting, corporate governance",role:"",topics:["Sustainability Accounting & Disclosure","Greenwashing & ESG","Corporate Governance"],uq:"https://researchers.uq.edu.au/researcher/21753",gs:"",em:""},
-  {name:"Katie Meissner",pos:"Lecturer",disc:"S&E",focus:"Climate resilience, risk management, insurance, urban climate adaptation",role:"ECA/HDR Engagement",topics:["Climate Risk & Adaptation"],uq:"https://researchers.uq.edu.au/researcher/32807",gs:"",em:""},
-  {name:"Natalie Peng",pos:"Lecturer",disc:"Accounting",focus:"Greenwashing, sustainability, superannuation, financial disclosure",role:"External Engagement",topics:["Greenwashing & ESG","Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/16010",gs:"",em:""},
-  {name:"Shahrzad Roohy Gohar",pos:"Lecturer",disc:"BIS",focus:"Environmental measurement and representation, business process management, IS for sustainability",role:"External Engagement",topics:["Information Systems for Sustainability"],uq:"https://about.uq.edu.au/experts/17018",gs:"",em:""},
-  {name:"Yang Xu",pos:"Lecturer",disc:"Accounting",focus:"Audit and assurance of sustainability reporting, financial crises",role:"",topics:["Sustainability Accounting & Disclosure"],uq:"https://researchers.uq.edu.au/researcher/20084",gs:"",em:""},
-  {name:"Rashed Asger",pos:"Teaching Associate",disc:"Finance",focus:"Climate, social development, sustainability",role:"",topics:["Climate Finance & Investment"],uq:"",gs:"",em:""}
+  {name:"Mireia Guix",pos:"Lecturer",disc:"Tourism",focus:"Sustainability in tourism, carbon offsetting, climate adaptation, modern slavery in supply chains",role:"",topics:["Sustainable Tourism","Responsible Business & Governance","Climate Change"],uq:"https://researchers.uq.edu.au/researcher/34288",gs:"",em:""},
+  {name:"Byungki Kim",pos:"Lecturer",disc:"Accounting",focus:"ESG issues in accounting, financial reporting, corporate governance",role:"",topics:["Sustainability Disclosure & ESG","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/21753",gs:"",em:""},
+  {name:"Katie Meissner",pos:"Lecturer",disc:"S&E",focus:"Climate resilience, risk management, insurance, urban climate adaptation",role:"ECA/HDR Engagement",topics:["Climate Change"],uq:"https://researchers.uq.edu.au/researcher/32807",gs:"",em:""},
+  {name:"Natalie Peng",pos:"Lecturer",disc:"Accounting",focus:"Greenwashing, sustainability, superannuation, financial disclosure",role:"External Engagement",topics:["Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/16010",gs:"",em:""},
+  {name:"Shahrzad Roohy Gohar",pos:"Lecturer",disc:"BIS",focus:"Environmental measurement and representation, business process management, IS for sustainability",role:"External Engagement",topics:["Responsible Business & Governance","Sustainability Disclosure & ESG"],uq:"https://about.uq.edu.au/experts/17018",gs:"",em:""},
+  {name:"Yang Xu",pos:"Lecturer",disc:"Accounting",focus:"Audit and assurance of sustainability reporting, financial crises",role:"",topics:["Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/20084",gs:"",em:""},
+  {name:"Rashed Asger",pos:"Teaching Associate",disc:"Finance",focus:"Climate, social development, sustainability",role:"",topics:["Sustainable Finance"],uq:"",gs:"",em:""}
 ];
 
 var allHDR = [
-  {name:"Kaveen Bachoo",disc:"Accounting",focus:"Mindset of leaders approaching grand challenge of sustainability",topics:["Responsible Leadership"],uq:"",gs:"",em:""},
+  {name:"Kaveen Bachoo",disc:"Accounting",focus:"Mindset of leaders approaching grand challenge of sustainability",topics:["Responsible Business & Governance"],uq:"",gs:"",em:""},
   {name:"Daniel Henshall",disc:"Tourism",focus:"Tourism and natural environment (Supervisor: Jie Wang)",topics:["Sustainable Tourism"],uq:"",gs:"",em:""},
-  {name:"Chen Li",disc:"Accounting",focus:"Auditors' role in sustainability disclosure",topics:["Sustainability Accounting & Disclosure"],uq:"",gs:"",em:""},
-  {name:"Yufan Liu",disc:"Tourism",focus:"Risk communication in tourism contexts",topics:["Sustainable Tourism","Climate Communication & Psychology"],uq:"",gs:"",em:""},
-  {name:"Muhammad Nazaruddin",disc:"Accounting",focus:"State-led sustainability assurance",topics:["Sustainability Accounting & Disclosure"],uq:"",gs:"",em:""},
-  {name:"Mohak Raitani",disc:"Finance",focus:"Climate and biodiversity finance",topics:["Climate Finance & Investment"],uq:"",gs:"",em:""},
-  {name:"Carlos Rincon Hurtado",disc:"S&E",focus:"Business models, entrepreneurship, resource mobilisation",topics:["Decarbonisation & Climate Transitions"],uq:"",gs:"",em:""},
-  {name:"Harvey Ruan",disc:"Accounting",focus:"Corporate climate transition reporting",topics:["Sustainability Accounting & Disclosure","Decarbonisation & Climate Transitions"],uq:"",gs:"",em:""},
-  {name:"Neil Taylor",disc:"S&E",focus:"Business Sustainability Initiative alignment",topics:["Sustainability Accounting & Disclosure"],uq:"",gs:"",em:""},
-  {name:"Zan Ye",disc:"Finance",focus:"Investor overconfidence and sustainability",role:"ECA/HDR Engagement",topics:["Climate Finance & Investment"],uq:"",gs:"",em:""}
+  {name:"Chen Li",disc:"Accounting",focus:"Auditors' role in sustainability disclosure",topics:["Sustainability Disclosure & ESG"],uq:"",gs:"",em:""},
+  {name:"Yufan Liu",disc:"Tourism",focus:"Risk communication in tourism contexts",topics:["Sustainable Tourism","Climate Change","Responsible Business & Governance"],uq:"",gs:"",em:""},
+  {name:"Muhammad Nazaruddin",disc:"Accounting",focus:"State-led sustainability assurance",topics:["Sustainability Disclosure & ESG"],uq:"",gs:"",em:""},
+  {name:"Mohak Raitani",disc:"Finance",focus:"Climate and biodiversity finance",topics:["Sustainable Finance","Climate Change"],uq:"",gs:"",em:""},
+  {name:"Carlos Rincon Hurtado",disc:"S&E",focus:"Business models, entrepreneurship, resource mobilisation",topics:["Climate Change","Responsible Business & Governance"],uq:"",gs:"",em:""},
+  {name:"Harvey Ruan",disc:"Accounting",focus:"Corporate climate transition reporting",topics:["Sustainability Disclosure & ESG","Climate Change"],uq:"",gs:"",em:""},
+  {name:"Neil Taylor",disc:"S&E",focus:"Business Sustainability Initiative alignment",topics:["Sustainability Disclosure & ESG"],uq:"",gs:"",em:""},
+  {name:"Zan Ye",disc:"Finance",focus:"Investor overconfidence and sustainability",role:"ECA/HDR Engagement",topics:["Sustainable Finance"],uq:"",gs:"",em:""}
 ];
 
 // ---- Hub Activity data ----
@@ -851,11 +858,10 @@ function applyResearcherSearch() {
 
 document.getElementById('main-search').addEventListener('input', applyResearcherSearch);
 
-// ---- Topic view (build accordions grouped by topic) ----
+// ---- Topic view (5 flat themes, each as a collapsible accordion) ----
 function buildTopicAccordions() {
   var byTopic = {};
   var unTagged = [];
-  // Initialize each topic with empty buckets
   for (var t = 0; t < TOPICS.length; t++) byTopic[TOPICS[t]] = { staff:[], hdr:[] };
   function bucket(person, isHDR) {
     var topics = person.topics || [];
@@ -874,9 +880,11 @@ function buildTopicAccordions() {
     var hdrList = byTopic[topic].hdr;
     var count = staffList.length + hdrList.length;
     var countLabel = staffList.length + ' staff' + (hdrList.length ? ' &middot; ' + hdrList.length + ' HDR' : '');
+    var desc = TOPIC_DESCRIPTIONS[topic] || '';
     h += '<details class="acc-sub" data-topic="' + escapeHtml(topic) + '">';
     h += '<summary><span class="topic-tag">' + escapeHtml(topic) + '</span> <span class="count">' + countLabel + '</span></summary>';
     h += '<div class="acc-body">';
+    if (desc) h += '<div class="topic-desc">' + escapeHtml(desc) + '</div>';
     if (staffList.length) {
       h += '<div class="grid">';
       for (var i = 0; i < staffList.length; i++) h += mkCard(staffList[i], false);
@@ -891,7 +899,7 @@ function buildTopicAccordions() {
     h += '</div></details>';
   }
   if (unTagged.length) {
-    h += '<details class="acc-sub" data-topic="untagged"><summary><span class="topic-tag" style="background:#999">Untagged</span> <span class="count">' + unTagged.length + '</span></summary><div class="acc-body"><div class="grid">';
+    h += '<details class="acc-sub" open><summary><span class="topic-tag" style="background:#999">Untagged</span> <span class="count">' + unTagged.length + '</span></summary><div class="acc-body"><div class="grid">';
     for (var i = 0; i < unTagged.length; i++) h += mkCard(unTagged[i].person, unTagged[i].isHDR);
     h += '</div></div></details>';
   }
@@ -899,8 +907,8 @@ function buildTopicAccordions() {
 }
 buildTopicAccordions();
 
-// View toggle (Discipline | Topic) within Researchers
-var currentView = 'discipline';
+// View toggle (Topic | Discipline) within Researchers — Topic is default
+var currentView = 'topic';
 var vtBtns = document.querySelectorAll('.vt-btn');
 function switchView(view) {
   currentView = view;
