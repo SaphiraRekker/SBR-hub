@@ -749,16 +749,13 @@ var allAchievements = [
   {date:"2024", member:"Jacquie Humphrey, Saphira Rekker", type:"book", title:"Sustainable Finance (open educational textbook)", venue:"Open Educational Resources Collective (CC BY-NC 4.0)", coauthors:"with Gilbert, Henry & Scott", link:"https://oercollective.caul.edu.au/sustainable-finance/"},
 
   // ===== Grants & funded projects =====
-  {date:"2024", member:"Saphira Rekker", type:"grant", title:"ARC DECRA: Corporate climate performance & science-based emissions reduction methodologies", detail:"Discovery Early Career Researcher Award, ~$400,000+ over 2024–2027. Building robust tools to measure, verify, and benchmark the credibility of corporate decarbonisation actions. (Project title — please refine to match the official ARC project description.)", link:""},
-  {date:"2024", member:"Kath Herbohn, Belinda Wade, Saphira Rekker, Michael Turner", type:"grant", title:"AASB-funded project: Corporate behaviour & climate-related financial disclosures", detail:"Multi-year project (2024–2027) investigating organisational behaviour and disclosure practices in response to mandatory climate-related reporting (with Ankit Jain).", link:""},
-
-  // ===== Leadership =====
-  // Leadership of research initiatives/platforms, editorial roles, prizes, fellowships,
-  // and other forms of academic recognition. Distinct from External Engagement
-  // (which is for sitting on bodies *outside* UQ).
-  {date:"2024", member:"Saphira Rekker", type:"leadership", title:"Lead, Carbon Budget Tracker", detail:"International collaborative research platform (UQ–Oxford–Princeton–LSE–Utrecht) assessing corporate and portfolio alignment with the Paris Agreement.", link:""},
-  {date:"2024", member:"Matthew Hornsey", type:"leadership", title:"Director, UQ Net Zero Observatory", detail:"Leading a multi-disciplinary group of academics and practitioners designing strategies to accelerate industry action and community support for rapid decarbonisation.", link:""},
-  {date:"2024", member:"Peter Clarkson", type:"leadership", title:"Editor, Contemporary Accounting Research", detail:"Also Associate Editor for Journal of Business Finance & Accounting, Journal of International Accounting Research, and Journal of Contemporary Accounting and Economics.", link:""},
+  {date:"2024", endDate:"2028", member:"Matthew Hornsey", type:"grant", title:"ARC Australian Laureate Fellowship: Overcoming community roadblocks to net-zero emissions", detail:"$3M+ over 5 years. Investigates the psychological factors underpinning climate inaction and community resistance to the net-zero transition; designs tools for government, industry and innovators to reduce social conflict and accelerate decarbonisation. (Announced August 2023; commenced 2024.)", link:"https://business.uq.edu.au/article/2023/08/uq-business-school-researcher-named-arc-laureate-fellow"},
+  {date:"2020", endDate:"2024", member:"Sara Dolnicar", type:"grant", title:"ARC Australian Laureate Fellowship: Pro-environmental behaviour in tourism (FL190100143)", detail:"$3.2M. Develops and validates a new theory that explains, predicts and elicits pro-environmental behaviour in pleasure-focused settings like tourism. Career total: 16+ ARC grants.", link:""},
+  {date:"2024", endDate:"2027", member:"Saphira Rekker", type:"grant", title:"ARC DECRA: Corporate climate performance & science-based emissions reduction methodologies", detail:"Discovery Early Career Researcher Award, ~$400,000+. Building robust tools to measure, verify, and benchmark the credibility of corporate decarbonisation actions. (Project title — please refine to match the official ARC project description.)", link:""},
+  {date:"2024", endDate:"2027", member:"Ya-Yen Sun", type:"grant", title:"ARC Discovery Project (lead CI): Global tourism carbon emissions database & decarbonisation enablers", detail:"Building a global tourism emissions database and identifying enablers for tourism decarbonisation. (Dates approximate — please verify project ID and exact period.)", link:""},
+  {date:"2024", endDate:"2027", member:"Daniel Nyberg", type:"grant", title:"ARC Discovery Project: Business responses to climate change", detail:"Examining how corporations engage internally and externally with the climate crisis. (Dates and project ID approximate — please verify.)", link:""},
+  {date:"2024", endDate:"2027", member:"Kath Herbohn, Belinda Wade, Saphira Rekker, Michael Turner", type:"grant", title:"AASB-funded project: Corporate behaviour & climate-related financial disclosures", detail:"Multi-year project investigating organisational behaviour and disclosure practices in response to mandatory climate-related reporting (with Ankit Jain).", link:""},
+  {date:"2023", endDate:"2026", member:"Lily Nguyen", type:"grant", title:"ARC Discovery Project: Corporate finance & firm innovation", detail:"Discovery grant on corporate finance and innovation. (Dates and project ID approximate — please verify, and consider whether the description should foreground climate finance angle.)", link:""},
 
   // ===== External engagement (sitting on external bodies' panels / advisory roles) =====
   // Use for ISO / SBTi / ASFI / GRI / IPCC / government advisory committees, etc.
@@ -1119,11 +1116,16 @@ function passesAchFilter(a) {
   var hasMonth = p.length >= 2;
   var month = hasMonth ? parseInt(p[1], 10) : null;
   if (achFilter.type !== 'all' && a.type !== achFilter.type) return false;
-  if (achFilter.year !== 'all' && year !== achFilter.year) return false;
+  if (achFilter.year !== 'all') {
+    // Multi-year entries (e.g. grants 2024–2027) show up in every year they are active.
+    // Use endDate when present; otherwise treat as single-year.
+    var filterYear = parseInt(achFilter.year, 10);
+    var startYear = parseInt(year, 10);
+    var endYear = a.endDate ? parseInt(a.endDate.split('-')[0], 10) : startYear;
+    if (filterYear < startYear || filterYear > endYear) return false;
+  }
   if (achFilter.month !== 'all' && hasMonth && month !== parseInt(achFilter.month, 10)) return false;
   if (achFilter.member !== 'all') {
-    // a.member is a comma-separated string of names. Split and exact-match
-    // each so we don't get false positives from substring overlaps.
     var memberList = (a.member || '').split(',').map(function(s) { return s.trim(); });
     if (memberList.indexOf(achFilter.member) < 0) return false;
   }
@@ -1195,9 +1197,16 @@ function renderAchievements() {
     if (!passesAchFilter(a)) continue;
     visibleEntries.push(a);
     visCount++;
+    // Compose date label — if endDate is present and different year, show range
+    var dateLabel = fmtDate(a.date);
+    if (a.endDate) {
+      var startYr = a.date.split('-')[0];
+      var endYr = a.endDate.split('-')[0];
+      if (endYr !== startYr) dateLabel = startYr + ' – ' + endYr;
+    }
     h += '<div class="timeline-item type-' + a.type + '">';
     h += '<div class="t-head">';
-    h += '<div><span class="t-type-tag type-' + a.type + '">' + TYPE_LABELS[a.type] + '</span> <span class="t-date">' + fmtDate(a.date) + '</span></div>';
+    h += '<div><span class="t-type-tag type-' + a.type + '">' + TYPE_LABELS[a.type] + '</span> <span class="t-date">' + dateLabel + '</span></div>';
     h += '</div>';
     h += '<div class="t-member">' + escapeHtml(a.member) + '</div>';
     h += '<div style="font-size:0.92rem; font-weight:500; margin-top:0.15rem;">' + escapeHtml(a.title) + '</div>';
