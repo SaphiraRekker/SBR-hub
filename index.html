@@ -309,8 +309,8 @@ footer a { color:var(--uq-purple); }
 
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="leadership">Leadership</button>
-  <button class="tab-btn" data-tab="researchers">Researchers <span class="cnt" id="tab-researcher-count">38</span></button>
-  <button class="tab-btn" data-tab="achievements">Achievements <span class="cnt" id="tab-ach-count">44</span></button>
+  <button class="tab-btn" data-tab="researchers">Researchers <span class="cnt" id="tab-researcher-count">40</span></button>
+  <button class="tab-btn" data-tab="achievements">Achievements <span class="cnt" id="tab-ach-count">73</span></button>
   <button class="tab-btn internal-only" data-tab="meetings">Meeting Minutes</button>
   <button class="tab-btn" data-tab="activities">Activities &amp; Events</button>
   <button class="tab-btn" data-tab="about">About</button>
@@ -1287,16 +1287,23 @@ for (var i = 0; i < chips.length; i++) {
   });
 }
 
-// Update header counts on the accordion section headers
+// Update header counts on tab pills and accordion section headers
 function updateSectionCounts() {
+  var totalResearchers = allStaff.length + allHDR.length;
+  // Accordion summary headers
   var rc = document.getElementById('researcher-count');
-  if (rc) rc.textContent = (allStaff.length + allHDR.length);
+  if (rc) rc.textContent = totalResearchers;
   var ac = document.getElementById('ach-total-count');
   if (ac) ac.textContent = allAchievements.length;
   var mc = document.getElementById('meet-count');
   if (mc) mc.textContent = allMeetings.length;
   var ec = document.getElementById('act-count');
   if (ec) ec.textContent = allActivities.length;
+  // Top tab pills (set dynamically so they stay in sync as data grows)
+  var tabRc = document.getElementById('tab-researcher-count');
+  if (tabRc) tabRc.textContent = totalResearchers;
+  var tabAc = document.getElementById('tab-ach-count');
+  if (tabAc) tabAc.textContent = allAchievements.length;
 }
 
 // Initial render
