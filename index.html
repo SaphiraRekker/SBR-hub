@@ -272,9 +272,16 @@ main.hub-main > .panel { padding:0; }
 .j-abdc-B { background:#7B1FA2; color:#fff; }
 .j-abdc-C { background:#9C27B0; color:#fff; }
 .timeline-item .t-member { font-size:0.95rem; font-weight:600; }
+.timeline-item .t-title { font-size:0.98rem; font-weight:600; line-height:1.35; color:var(--text); }
+.timeline-item .t-byline { font-size:0.82rem; color:var(--text-light); margin-top:0.5rem; padding-top:0.45rem; border-top:1px solid var(--border); line-height:1.45; }
+.timeline-item .t-byline .t-coauth-inline { color:var(--text-light); }
+.timeline-item .t-byline .member-link { color:var(--uq-purple); text-decoration:none; font-weight:600; }
+.timeline-item .t-byline .member-link:hover { text-decoration:underline; }
 .timeline-item .t-detail { font-size:0.86rem; color:var(--text); margin-top:0.2rem; line-height:1.45; }
 .timeline-item .t-link { font-size:0.78rem; color:var(--uq-purple); text-decoration:none; margin-top:0.4rem; display:inline-block; }
 .timeline-item .t-link:hover { text-decoration:underline; }
+@keyframes cardFlash { 0% { box-shadow:0 0 0 0 rgba(81,36,122,0.6); } 50% { box-shadow:0 0 0 6px rgba(81,36,122,0.18); } 100% { box-shadow:0 0 0 0 rgba(81,36,122,0); } }
+.card.card-flash { animation: cardFlash 1.6s ease-out; }
 
 .empty-state { background:var(--card-bg); border:2px dashed var(--border); border-radius:8px; padding:2rem; text-align:center; color:var(--text-light); font-size:0.9rem; }
 
@@ -856,7 +863,7 @@ function escapeHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;
 
 function mkCard(r, isHDR) {
   var slug = ds(r.disc);
-  var h = '<div class="card disc-' + slug + '" data-disc="' + r.disc + '" data-search="' + (r.name + ' ' + r.disc + ' ' + r.focus + ' ' + (r.pos || '')).toLowerCase() + '">';
+  var h = '<div class="card disc-' + slug + '" data-disc="' + r.disc + '" data-name="' + escapeHtml(r.name) + '" data-search="' + (r.name + ' ' + r.disc + ' ' + r.focus + ' ' + (r.pos || '')).toLowerCase() + '">';
   h += '<div class="name">' + r.name;
   if (r.role) {
     var bc = r.role.indexOf('Lead') >= 0 ? 'badge-gold' : 'badge-purple';
@@ -1242,6 +1249,55 @@ function renderAchStats(visibleEntries) {
   document.getElementById('ach-stats').innerHTML = h;
 }
 
+// Set of all hub member names (staff + HDR) so we can linkify them in achievement bylines
+var HUB_MEMBER_NAMES = (function() {
+  var s = {};
+  for (var i = 0; i < allStaff.length; i++) s[allStaff[i].name] = true;
+  for (var i = 0; i < allHDR.length; i++) s[allHDR[i].name] = true;
+  return s;
+})();
+
+// Render the "By: …" line. Names that match a hub member become clickable
+// and jump to their researcher card; other names render as plain text.
+function renderByline(memberStr, coauthorStr) {
+  if (!memberStr && !coauthorStr) return '';
+  var parts = (memberStr || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+  var rendered = parts.map(function(nm) {
+    if (HUB_MEMBER_NAMES[nm]) {
+      return '<a href="#" class="member-link" data-jump="' + escapeHtml(nm) + '">' + escapeHtml(nm) + '</a>';
+    }
+    return escapeHtml(nm);
+  });
+  var html = '<div class="t-byline">';
+  if (rendered.length) html += rendered.join(', ');
+  if (coauthorStr) {
+    html += (rendered.length ? ' ' : '') + '<span class="t-coauth-inline">' + escapeHtml(coauthorStr) + '</span>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// Jump to a researcher card: switch to Researchers tab, open the surrounding
+// accordion, scroll the card into view, and add a brief highlight.
+function jumpToResearcher(name) {
+  switchTab('researchers');
+  // Use the discipline view (default) — find all cards matching the name
+  setTimeout(function() {
+    var cards = document.querySelectorAll('.card[data-name="' + name.replace(/"/g,'\\"') + '"]');
+    if (!cards.length) return;
+    var card = cards[0];
+    // Open any parent <details>
+    var p = card.parentNode;
+    while (p && p !== document.body) {
+      if (p.tagName === 'DETAILS') p.open = true;
+      p = p.parentNode;
+    }
+    card.scrollIntoView({behavior:'smooth', block:'center'});
+    card.classList.add('card-flash');
+    setTimeout(function(){ card.classList.remove('card-flash'); }, 1800);
+  }, 50);
+}
+
 function renderAchievements() {
   var sorted = allAchievements.slice().sort(byDateDesc);
   var tlEl = document.getElementById('achievement-timeline');
@@ -1265,21 +1321,28 @@ function renderAchievements() {
     h += '<div class="t-head">';
     h += '<div><span class="t-type-tag type-' + a.type + '">' + TYPE_LABELS[a.type] + '</span> <span class="t-date">' + dateLabel + '</span></div>';
     h += '</div>';
-    h += '<div class="t-member">' + escapeHtml(a.member) + '</div>';
-    h += '<div style="font-size:0.92rem; font-weight:500; margin-top:0.15rem;">' + escapeHtml(a.title) + '</div>';
-
-    // Type-specific venue line
+    // Title first, then venue
+    h += '<div class="t-title">' + escapeHtml(a.title) + '</div>';
     if (a.type === 'pub' && a.journal) {
       h += '<div class="t-venue">' + escapeHtml(a.journal) + journalBadgesHtml(a.journal) + '</div>';
     } else if ((a.type === 'report' || a.type === 'book') && a.venue) {
       h += '<div class="t-venue">' + escapeHtml(a.venue) + '</div>';
     }
-    if (a.coauthors) h += '<div class="t-coauth">' + escapeHtml(a.coauthors) + '</div>';
     if (a.detail) h += '<div class="t-detail">' + escapeHtml(a.detail) + '</div>';
     if (a.link) h += '<a class="t-link" href="' + a.link + '" target="_blank" rel="noopener">View &rarr;</a>';
+    // Author byline at the bottom — hub members are clickable
+    h += renderByline(a.member, a.coauthors);
     h += '</div>';
   }
   tlEl.innerHTML = h;
+  // Wire up the member jump links
+  var memberLinks = tlEl.querySelectorAll('.member-link');
+  for (var mi = 0; mi < memberLinks.length; mi++) {
+    memberLinks[mi].addEventListener('click', function(e) {
+      e.preventDefault();
+      jumpToResearcher(this.getAttribute('data-jump'));
+    });
+  }
   if (visCount === 0) emptyEl.className = emptyEl.className.replace(' is-hidden','');
   else if (emptyEl.className.indexOf('is-hidden') < 0) emptyEl.className += ' is-hidden';
   renderAchStats(visibleEntries);
