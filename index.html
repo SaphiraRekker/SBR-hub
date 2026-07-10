@@ -329,10 +329,10 @@ footer a { color:var(--uq-purple); }
 <div class="panel active" id="panel-leadership">
   <div>
     <div class="stats-row">
-      <div class="stat-pill"><div class="num">44</div><div class="label">Researchers</div></div>
+      <div class="stat-pill"><div class="num" id="stat-researchers">67</div><div class="label">Researchers</div></div>
       <div class="stat-pill"><div class="num">6</div><div class="label">Disciplines</div></div>
-      <div class="stat-pill"><div class="num">33</div><div class="label">Staff</div></div>
-      <div class="stat-pill"><div class="num">11</div><div class="label">HDR</div></div>
+      <div class="stat-pill"><div class="num" id="stat-staff">55</div><div class="label">Staff</div></div>
+      <div class="stat-pill"><div class="num" id="stat-hdr">12</div><div class="label">HDR</div></div>
     </div>
 
     <div class="sec-head">Confirmed Roles</div>
@@ -1438,6 +1438,13 @@ function updateSectionCounts() {
   if (tabRc) tabRc.textContent = totalResearchers;
   var tabAc = document.getElementById('tab-ach-count');
   if (tabAc) tabAc.textContent = allAchievements.length;
+  // Overview stat pills at top of the About/Leadership panel
+  var sr = document.getElementById('stat-researchers');
+  if (sr) sr.textContent = totalResearchers;
+  var ss = document.getElementById('stat-staff');
+  if (ss) ss.textContent = allStaff.length;
+  var sh = document.getElementById('stat-hdr');
+  if (sh) sh.textContent = allHDR.length;
 }
 
 // Initial render
