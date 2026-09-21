@@ -1297,20 +1297,57 @@ function renderActivities() {
 // Achievement filter state
 var achFilter = { type: 'all', year: 'all', month: 'all', member: 'all' };
 
-// Build the member dropdown from the directory (alphabetical, includes both staff and HDR)
-(function buildMemberFilter() {
+// Build the member dropdown — restricted to members who have at least one achievement of the currently-selected type.
+// Rebuilds on every type filter change so users can only pick productive filter combos.
+function buildMemberFilter() {
   var sel = document.getElementById('filter-member');
   if (!sel) return;
-  var names = [];
-  for (var i = 0; i < allStaff.length; i++) names.push(allStaff[i].name);
-  for (var i = 0; i < allHDR.length; i++) names.push(allHDR[i].name);
-  names.sort(function(a, b) { return a.localeCompare(b); });
+  var previouslySelected = sel.value || 'all';
+
+  // Count achievements per member for the currently-selected type
+  var counts = {};
+  for (var i = 0; i < allAchievements.length; i++) {
+    var a = allAchievements[i];
+    if (achFilter.type !== 'all' && a.type !== achFilter.type) continue;
+    var members = (a.member || '').split(',').map(function(s){ return s.trim(); });
+    for (var j = 0; j < members.length; j++) {
+      if (!members[j]) continue;
+      counts[members[j]] = (counts[members[j]] || 0) + 1;
+    }
+  }
+
+  // Get sorted list of eligible members
+  var names = Object.keys(counts).sort(function(a, b) { return a.localeCompare(b); });
+
+  // Rebuild options
+  sel.innerHTML = '';
+  var typeLabel = achFilter.type === 'all' ? 'All members' : 'All (with ' + achFilter.type + ')';
+  var allOpt = document.createElement('option');
+  allOpt.value = 'all';
+  allOpt.textContent = typeLabel;
+  sel.appendChild(allOpt);
   for (var i = 0; i < names.length; i++) {
     var opt = document.createElement('option');
     opt.value = names[i];
-    opt.textContent = names[i];
+    opt.textContent = names[i] + ' (' + counts[names[i]] + ')';
     sel.appendChild(opt);
   }
+
+  // Preserve prior selection if that member still has achievements of the new type; otherwise reset to all
+  if (previouslySelected !== 'all' && counts[previouslySelected]) {
+    sel.value = previouslySelected;
+  } else {
+    sel.value = 'all';
+    if (achFilter.member !== 'all') {
+      achFilter.member = 'all';
+    }
+  }
+}
+
+(function initMemberFilter() {
+  var sel = document.getElementById('filter-member');
+  if (!sel) return;
+  buildMemberFilter();
   sel.addEventListener('change', function() {
     achFilter.member = sel.value;
     renderAchievements();
@@ -1520,6 +1557,9 @@ for (var i = 0; i < chips.length; i++) {
     var siblings = this.parentNode.querySelectorAll('.chip[data-filter="' + dim + '"]');
     for (var j = 0; j < siblings.length; j++) siblings[j].className = siblings[j].className.replace(' active','');
     this.className += ' active';
+    // When the type filter changes, rebuild the member dropdown so it only lists
+    // members with achievements of the new type
+    if (dim === 'type') buildMemberFilter();
     renderAchievements();
   });
 }
