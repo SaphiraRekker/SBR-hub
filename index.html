@@ -429,6 +429,14 @@ footer a { color:var(--uq-purple); }
 
     </div><!-- /discipline-container -->
 
+    <details class="acc-sub alumni-section" id="alumni-accordion" style="margin-top:1.5rem;">
+      <summary><span class="topic-tag" style="background:#666;">Alumni</span> <span class="count" id="alumni-count"></span></summary>
+      <div class="acc-body">
+        <p style="font-size:0.9rem; color:var(--text-light); margin:0.4rem 0 0.8rem;">Former hub members whose contributions to sustainable business research at UQ are still part of the hub's history.</p>
+        <div class="grid" id="grid-alumni"></div>
+      </div>
+    </details>
+
     <div class="no-results is-hidden" id="no-results">No researchers match your search.</div>
   </div>
 </div>
@@ -602,7 +610,6 @@ var allStaff = [
   {name:"Peter Clarkson",pos:"Professor",disc:"Accounting",focus:"Voluntary disclosure, firm valuation, environmental performance accounting",role:"",topics:["Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/184",gs:"https://scholar.google.com/citations?user=6fllVQQAAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/184.jpeg",em:"p.clarkson@business.uq.edu.au"},
   {name:"Sara Dolnicar",pos:"Professor",disc:"Tourism",focus:"Market segmentation, sustainable tourism, environmental sustainability in hospitality",role:"",topics:["Sustainable Tourism"],uq:"https://researchers.uq.edu.au/researcher/2996",gs:"https://scholar.google.com/citations?user=e74qj60AAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/2996.jpeg",em:"s.dolnicar@uq.edu.au"},
   {name:"Matthew Hornsey",pos:"Professor",disc:"Management",focus:"Climate scepticism, misinformation, strategies to accelerate decarbonisation support",role:"",topics:["Climate Change","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/375",gs:"https://scholar.google.com/citations?user=TDA9gz4AAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/375.jpeg",em:"m.hornsey@uq.edu.au"},
-  {name:"Daniel Nyberg",pos:"Professor",disc:"S&E",focus:"Climate change politics, corporate capitalism, sustainability and democracy",role:"",topics:["Climate Change","Responsible Business & Governance"],uq:"https://researchers.uq.edu.au/researcher/39152",gs:"https://scholar.google.com/citations?user=UmA9busAAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/39152.jpeg",em:"d.nyberg@business.uq.edu.au"},
   {name:"Nicola Pless",pos:"Honorary Professor",disc:"Management",focus:"Responsible leadership (pioneer/thought leader); business ethics and sustainability; leadership development; global corporate responsibility",role:"",topics:["Responsible Business & Governance","Sustainability Disclosure & ESG"],uq:"https://about.uq.edu.au/experts/43755",gs:"https://scholar.google.com/citations?user=wZvZAccAAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/43755.jpeg",em:"n.pless@uq.edu.au"},
   {name:"Belinda Wade",pos:"Professor",disc:"S&E",focus:"Organisational decarbonisation, climate transitions, sustainability reporting",role:"",topics:["Climate Change","Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/18470",gs:"https://scholar.google.com/citations?user=YRvhhbsAAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/18470.jpeg",em:"b.wade@business.uq.edu.au"},
   {name:"Jacquelyn Humphrey",pos:"Associate Professor",disc:"Finance",focus:"Sustainable finance, responsible investment, climate equity, ESG",role:"",topics:["Sustainable Finance","Sustainability Disclosure & ESG"],uq:"https://researchers.uq.edu.au/researcher/6143",gs:"https://scholar.google.com.au/citations?user=XtlzitQAAAAJ",photo:"https://about.uq.edu.au/sites/default/files/profiles/6143.jpeg",em:"j.humphrey@business.uq.edu.au"},
@@ -663,6 +670,12 @@ var allHDR = [
   {name:"Zan Ye",disc:"Finance",focus:"Investor overconfidence, empirical asset pricing, sustainable finance (PhD candidate, supervised by Prof Robert Faff and Dr Khoa Hoang)",role:"ECA/HDR Engagement",topics:["Sustainable Finance"],uq:"",gs:"",em:"zan.ye@uq.edu.au"},
   {name:"Nélida Gómez Quintero",disc:"S&E",focus:"Organisational futures, deep technologies, entrepreneurship, strategy; organisational governance for transitioning to transformative futures",topics:["Responsible Business & Governance"],uq:"https://orcid.org/0000-0003-2539-3624",gs:"https://scholar.google.com/citations?user=IcdMkhUAAAAJ",em:"n.gomez@business.uq.edu.au"},
   {name:"Suberia Clemmensen",disc:"Management",focus:"Indigenous business, sustainable Indigenous enterprise (Industry PhD; Indigenous Business Hub)",topics:["Responsible Business & Governance"],uq:"https://about.uq.edu.au/experts/35031",gs:"",em:"s.clemmensen@uq.edu.au"}
+];
+
+var allAlumni = [
+  {name:"Daniel Nyberg", pos:"Professor (former)", disc:"S&E", focus:"Climate change politics, corporate capitalism, sustainability and democracy — moved on from UQ, 2026", topics:["Climate Change","Responsible Business & Governance"], uq:"", gs:"https://scholar.google.com/citations?user=UmA9busAAAAJ", em:"", left:"2026"},
+  {name:"Judith Mair", pos:"Associate Professor (former, Tourism Discipline Leader)", disc:"Tourism", focus:"Events and tourism impacts; mega-event legacies; sustainable events — left UQ 2026", topics:["Sustainable Tourism","Climate Change"], uq:"", gs:"https://scholar.google.com/citations?user=MmCHC60AAAAJ", em:"", left:"2026"},
+  {name:"Ihtisham Malik", pos:"Honorary Senior Lecturer (former)", disc:"Finance", focus:"Sustainable finance, asset pricing, corporate finance — no longer at UQ", topics:["Sustainable Finance"], uq:"", gs:"", em:"", left:"2026"}
 ];
 
 // ---- Hub Activity data ----
@@ -1054,6 +1067,15 @@ function gridIdSuffix(disc) { return disc === 'S&E' ? 'SE' : disc; }
       hEl.innerHTML = hHtml;
     }
   }
+  // Alumni grid — separate accordion at bottom
+  var alumEl = document.getElementById('grid-alumni');
+  if (alumEl && typeof allAlumni !== 'undefined') {
+    var aHtml = '';
+    for (var i = 0; i < allAlumni.length; i++) aHtml += mkCard(allAlumni[i], false);
+    alumEl.innerHTML = aHtml;
+    var aCount = document.getElementById('alumni-count');
+    if (aCount) aCount.textContent = allAlumni.length + ' former member' + (allAlumni.length === 1 ? '' : 's');
+  }
 })();
 
 // ---- Researcher search across all accordions in the current view ----
@@ -1389,6 +1411,9 @@ var HUB_MEMBER_NAMES = (function() {
   var s = {};
   for (var i = 0; i < allStaff.length; i++) s[allStaff[i].name] = true;
   for (var i = 0; i < allHDR.length; i++) s[allHDR[i].name] = true;
+  if (typeof allAlumni !== 'undefined') {
+    for (var i = 0; i < allAlumni.length; i++) s[allAlumni[i].name] = true;
+  }
   return s;
 })();
 
